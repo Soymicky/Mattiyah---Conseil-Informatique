@@ -5,65 +5,71 @@
 {% block body %}
     <div class="container py-5">
         <h1>Prendre rendez-vous</h1>
-         <div>
-                {% if dejaRDV %}
-                 <div class="alert alert-info" role="alert">
-                        <p> Vous avez déjà un rendez-vous. Vous pouvez le modifier ou l'annuler depuis 
-                        <a href="{{ path('mon_rendez_vous') }}">votre espace de gestion</a></p>.
-                     </div>
-                {% else %}
+         
+        {% if dejaRDV %}
+            <div class="alert alert-info" role="alert">
+                <p> Vous avez déjà un rendez-vous. Vous pouvez le modifier ou l'annuler depuis 
+                <a href="{{ path('mon_rendez_vous') }}">votre espace de gestion</a></p>.
+            </div>
+        {% else %}
                
             {% if app.user %}
-                <div class="mb-3 text-center">
-                    <label for="calendrier-jours" class="form-label  texttresgras textvert texte_majuscule fs-2">Date :</label>
-                    <div class="d-flex">
-                        <button type="button " id="mois-precedent" class="btn btn-outline-success me-2">&lt;</button>
-                        <span id="mois-en-cours" class="fw-semibold me-2 fs-3"></span>
-                        <button type="button" id="mois-suivant" class="btn btn-outline-success">&gt;</button>
-                    </div>
-                    <div>
-                        <select id="annee" class="form-select form-select-sm w-auto me-2"></select>
-                    </div>
-                    <div id="calendrier-jours" class="d-grid gap-2 mt-2" style="grid-template-columns: repeat(7, 1fr);">
-                    </div>
-                    <input type="hidden" id="input-date" name="date">
-                </div>
-
                 <form method="post" action="{{ path('enregistrer_rdv') }}" id="rdvForm">
-                    <div class="mb-3 text-center">
-                        <label for="liste-heures" class="form-label fw-bolder textvert texte_majuscule fs-2">Heure :</label>
-                        <div id="liste-heures" class="d-grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));">
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">09:00</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">10:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">11:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">12:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">14:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">15:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">16:10</button>
-                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">17:10</button>
-                        </div>
-                        <input type="hidden" id="input-heure" name="heure">
+                    {# NOUVEAU CHAMP pour la Date - Flatpickr s'y attachera #}
+                    <div class="mb-3">
+                        <label for="date_rdv" class="form-label text-success fw-bolder fs-2">Date du rendez-vous :</label>
+                        <input type="text" class="form-control" id="date_rdv" name="date" placeholder="Cliquez pour sélectionner une date" required>
                     </div>
 
 
-                    <div class="mb-3">
-                        <label class="form-label">Service choisi :</label> <br>                  
-                            {% for service in services %}
-                            <input type="checkbox"  name="services[]" value="{{ service.id }}">
-                            <label for="services[]">{{ service.nomService }}</label><br>
-                            {% endfor %}
-                            
-                       
+                    {# NOUVEAU CHAMP pour l'Heure - Flatpickr s'y attachera #}
+                    {# <div class="mb-3">
+                        <label for="heure_rdv" class="form-label text-success fw-bolder fs-2">Heure du rendez-vous :</label>
+                        <input type="text" class="form-control" id="heure_rdv" name="heure" placeholder="Cliquez pour sélectionner une heure" required>
+                    </div> #}
+                      <div class="mb-3">
+                        <label for="heure_rdv" class="form-label text-success fw-bolder fs-2">Heure du rendez-vous :</label>
+                        <select class="form-select" id="heure_rdv" name="heure" required>
+                            <option value="">Sélectionnez une heure</option>
+                            <option value="09:00">09:00H</option>
+                            <option value="10:10">10:10H</option>
+                            <option value="11:10">11:10H</option>
+                            <option value="12:10">12:10h</option>
+                            <option value="14:10">14:10H</option>
+                            <option value="15:10">15:10H</option>
+                            <option value="16:10">16:10H</option>
+                            <option value="17:10">17:10H</option>
+                            {# Ajoutez ou supprimez des options d'heure ici si nécessaire #}
+                        </select>
+                    </div>
 
-                        <label class="form-label">Type de service :</label>
-                        <select id="" name="typeService" class="form-select">
-                            <option value="">Sélectionnez un type de service</option>
+
+                    {# Champ pour les Services (CHECKBOXES) #}
+                    <div class="mb-3">
+                        <label class="form-label text-success fw-bolder fs-2">Service choisi :</label>
+                        <div id="service"> {# Le conteneur des checkboxes DOIT avoir l'ID 'service' #}
                             {% for service in services %}
-                                <option value="{{ services.id }}">{{ type.nomService }}</option>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="services[]" value="{{ service.id }}" id="service_{{ service.id }}">
+                                    <label class="form-check-label" for="service_{{ service.id }}">
+                                        {{ service.nomService }} 
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    {# choix du Niveau de Service #}
+                    <div class="mb-3">
+                        <label for="niveauService" class="form-label text-success fw-bolder fs-2">Niveau de service :</label>
+                        <select id="niveauService" name="niveauService" class="form-select" required>
+                            <option value="">Sélectionnez un niveau de service</option>
+                            {% for niveau in niveauService %}
+                                <option value="{{ niveau.id }}">{{ niveau.nomNiveau }}</option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div>
+
                     <button type="submit" id="validerBtn" class="btn btn-primary">Valider le rendez-vous</button>
                 </form>
 
@@ -81,13 +87,11 @@
                     <a href="{{ path('inscription') }}" class="btn btn-secondary">Créer un compte</a>
                 </p>
             {% endif %}
-        </div>
-         {% endif %}
-         </div>    
-         <div>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }}
+    {{ parent() }} {# Cette ligne est très importante, elle inclut les scripts de base.html.twig (dont Flatpickr) #}
     <script src="{{ asset('js/prendre-rdv.js') }}"></script>
 {% endblock %}

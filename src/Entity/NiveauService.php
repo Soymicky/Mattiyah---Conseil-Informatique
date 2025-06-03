@@ -25,15 +25,16 @@ class NiveauService
     private Collection $servicesList;
 
     /**
-     * @var Collection<int, RendezVous>
+     * @var Collection<int, RendezVousService>
      */
-    #[ORM\OneToMany(mappedBy: 'niveauService', targetEntity: RendezVous::class)]
-    private Collection $rendezVousList;
+    #[ORM\OneToMany(targetEntity: RendezVousService::class, mappedBy: 'niveauService')]
+    private Collection $rendezVousServices;
 
     public function __construct()
     {
         $this->servicesList = new ArrayCollection();
-        $this->rendezVousList = new ArrayCollection();
+        // La ligne $this->rendezVousList = new ArrayCollection(); a été supprimée
+        $this->rendezVousServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,29 +85,29 @@ class NiveauService
     }
 
     /**
-     * @return Collection<int, RendezVous>
+     * @return Collection<int, RendezVousService>
      */
-    public function getRendezVousList(): Collection
+    public function getRendezVousServices(): Collection
     {
-        return $this->rendezVousList;
+        return $this->rendezVousServices;
     }
 
-    public function addRendezVousList(RendezVous $rendezVousList): static
+    public function addRendezVousService(RendezVousService $rendezVousService): static
     {
-        if (!$this->rendezVousList->contains($rendezVousList)) {
-            $this->rendezVousList->add($rendezVousList);
-            $rendezVousList->setNiveauService($this);
+        if (!$this->rendezVousServices->contains($rendezVousService)) {
+            $this->rendezVousServices->add($rendezVousService);
+            $rendezVousService->setNiveauService($this);
         }
 
         return $this;
     }
 
-    public function removeRendezVousList(RendezVous $rendezVousList): static
+    public function removeRendezVousService(RendezVousService $rendezVousService): static
     {
-        if ($this->rendezVousList->removeElement($rendezVousList)) {
+        if ($this->rendezVousServices->removeElement($rendezVousService)) {
             // set the owning side to null (unless already changed)
-            if ($rendezVousList->getNiveauService() === $this) {
-                $rendezVousList->setNiveauService(null);
+            if ($rendezVousService->getNiveauService() === $this) {
+                $rendezVousService->setNiveauService(null);
             }
         }
 

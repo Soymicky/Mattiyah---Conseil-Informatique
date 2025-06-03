@@ -18,22 +18,22 @@ class Services
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomService = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $descriptionService = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $typeOffre = null;
-
-    #[ORM\ManyToOne(inversedBy: 'servicesList')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?NiveauService $niveauService = null;
-
+    /**
+     * @var Collection<int, RendezVous>
+     */
     #[ORM\ManyToMany(targetEntity: RendezVous::class, mappedBy: 'services')]
     private Collection $rendezVousList;
+
+    /**
+     * @var Collection<int, RendezVousService>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVousService::class, mappedBy: 'services')]
+    private Collection $rendezVousServices;
 
     public function __construct()
     {
         $this->rendezVousList = new ArrayCollection();
+        $this->rendezVousServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -53,42 +53,6 @@ class Services
         return $this;
     }
 
-    public function getDescriptionService(): ?string
-    {
-        return $this->descriptionService;
-    }
-
-    public function setDescriptionService(?string $descriptionService): static
-    {
-        $this->descriptionService = $descriptionService;
-
-        return $this;
-    }
-
-    public function getTypeOffre(): ?string
-    {
-        return $this->typeOffre;
-    }
-
-    public function setTypeOffre(?string $typeOffre): static
-    {
-        $this->typeOffre = $typeOffre;
-
-        return $this;
-    }
-
-    public function getNiveauService(): ?NiveauService
-    {
-        return $this->niveauService;
-    }
-
-    public function setNiveauService(?NiveauService $niveauService): static
-    {
-        $this->niveauService = $niveauService;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, RendezVous>
      */
@@ -99,8 +63,9 @@ class Services
 
     public function addRendezVousList(RendezVous $rendezVousList): static
     {
-        $this->rendezVousList->add($rendezVousList);
-        $rendezVousList->addService($this);
+        if (!$this->rendezVousList->contains($rendezVousList)) {
+            $this->rendezVousList->add($rendezVousList);
+        }
 
         return $this;
     }
@@ -108,7 +73,36 @@ class Services
     public function removeRendezVousList(RendezVous $rendezVousList): static
     {
         $this->rendezVousList->removeElement($rendezVousList);
-        $rendezVousList->removeService($this);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVousService>
+     */
+    public function getRendezVousServices(): Collection
+    {
+        return $this->rendezVousServices;
+    }
+
+    public function addRendezVousService(RendezVousService $rendezVousService): static
+    {
+        if (!$this->rendezVousServices->contains($rendezVousService)) {
+            $this->rendezVousServices->add($rendezVousService);
+            $rendezVousService->setServices($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVousService(RendezVousService $rendezVousService): static
+    {
+        if ($this->rendezVousServices->removeElement($rendezVousService)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVousService->getServices() === $this) {
+                $rendezVousService->setServices(null);
+            }
+        }
 
         return $this;
     }

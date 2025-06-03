@@ -35,13 +35,16 @@ class RendezVous
     #[ORM\ManyToMany(targetEntity: Services::class, inversedBy: 'rendezVousList')]
     private Collection $services;
 
-    #[ORM\ManyToOne(inversedBy: 'rendezVousList')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?NiveauService $niveauService = null;
+    /**
+     * @var Collection<int, RendezVousService>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVousService::class, mappedBy: 'rendezVous')]
+    private Collection $rendezVousServices;
 
     public function __construct()
     {
         $this->services = new ArrayCollection();
+        $this->rendezVousServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,8 +59,7 @@ class RendezVous
 
     public function setDateRDV(?\DateTimeInterface $dateRDV): static
     {
-        $this->dateRDV = $dateRDV;
-
+        $this->dateRDV = $dateRDV; // D'abord, assignez la valeur
         return $this;
     }
 
@@ -69,7 +71,6 @@ class RendezVous
     public function setStatut(?string $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -81,7 +82,6 @@ class RendezVous
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
         return $this;
     }
 
@@ -126,14 +126,32 @@ class RendezVous
         return $this;
     }
 
-    public function getNiveauService(): ?NiveauService
+    /**
+     * @return Collection<int, RendezVousService>
+     */
+    public function getRendezVousServices(): Collection
     {
-        return $this->niveauService;
+        return $this->rendezVousServices;
     }
 
-    public function setNiveauService(?NiveauService $niveauService): static
+    public function addRendezVousService(RendezVousService $rendezVousService): static
     {
-        $this->niveauService = $niveauService;
+        if (!$this->rendezVousServices->contains($rendezVousService)) {
+            $this->rendezVousServices->add($rendezVousService);
+            $rendezVousService->setRendezVous($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVousService(RendezVousService $rendezVousService): static
+    {
+        if ($this->rendezVousServices->removeElement($rendezVousService)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVousService->getRendezVous() === $this) {
+                $rendezVousService->setRendezVous(null);
+            }
+        }
 
         return $this;
     }

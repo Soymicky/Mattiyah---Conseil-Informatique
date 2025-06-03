@@ -2,6 +2,11 @@
 
 {% block title %}Mon Rendez-vous{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
 {% block body %}
 <h1>Mon rendez-vous</h1>
 <div class="container my-5">
@@ -9,6 +14,7 @@
         Mon rendez-vous <span class="border-bottom border-warning d-inline-block" style="width: 60px;"></span>
     </h1>
 
+{# prochain rdv #}
     <h4 class="mt-5 fw-semibold">Prochain rendez-vous</h4>
 
     <div class="row align-items-start mt-4">
@@ -19,8 +25,16 @@
                     {% if rendezvous %}
                         <p class="mb-1"><strong>De :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
                         <p class="mb-1 text-danger"><strong>Date et heure :</strong> {{ rendezvous.dateRDV|date('d/m/Y H:i') }}</p>
-                        <p class="mb-1"><strong>Service choisi :</strong> {{ rendezvous.service ? rendezvous.service.nomService : 'Non défini' }}</p>
-                        <p class="mb-1"><strong>Type de service :</strong> {{ rendezvous.service ? rendezvous.service.typeService : 'Non défini' }}</p>
+
+                        {% set rdvService = rendezvous.rendezVousServices.first %}
+
+                        {% if rdvService %}
+                            <p class="mb-1"><strong>Service choisi :</strong> {{ rdvService.services.nomService }}</p>
+                            <p class="mb-1"><strong>Type de service :</strong> {{ rdvService.niveauService.nomNiveau }}</p>
+                        {% else %}
+                            <p class="mb-1">Aucun service associé à ce rendez-vous.</p>
+                        {% endif %}
+
                     {% else %}
                         <p class="mb-1"><strong>De :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
                         <p>Aucun rendez-vous pris.</p>
@@ -29,6 +43,7 @@
                 </div>
             </div>
 
+{# modification son rdv - annuler ou modifier #}
             <div class="d-flex gap-3">
                 {% if rendezvous %}
                     <button class="btn btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#editModal">
@@ -47,11 +62,10 @@
     </div>
 </div>
 
-{# MODAL DE CHANGEMENT DE RENDEZ-VOUS #}
 
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content padding20">
             <div class="modal-header fondvert textjaune fw-bold">
                 <h5 class="modal-title" id="editModalLabel">Modifier votre rendez-vous</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -61,47 +75,53 @@
                     <p>Votre rendez-vous actuel est prévu pour le : <strong class="texterouge">{{ rendezvous.dateRDV|date('d/m/Y H:i') }}</strong></p>
                     <form method="post" action="{{ path('modifier_mon_rendezvous', {'id': rendezvous.id}) }}">
                         <div class="mb-3 text-center">
-                            <label for="nouveau-calendrier-jours" class="form-label texttresgras textvert texte_majuscule fs-2">Nouvelle date :</label>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <button type="button" id="nouveau-mois-precedent" class="btn btn-outline-success me-2">&lt;</button>
-                                <span id="nouveau-mois-en-cours" class="fw-semibold me-2 fs-3"></span>
-                                <button type="button" id="nouveau-mois-suivant" class="btn btn-outline-success">&gt;</button>
-                            </div>
-                            <div class="mt-2">
-                                <select id="nouveau-annee" class="form-select form-select-sm w-auto mx-auto"></select>
-                            </div>
-                            <div id="nouveau-calendrier-jours" class="d-grid gap-2 mt-2" style="grid-template-columns: repeat(7, 1fr);">
-                            </div>
-                            <input type="hidden" id="nouvelle-input-date" name="nouvelle_date" value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('Y-m-d') }}" required>
+                            <label for="nouvelle_date_rdv" class="form-label texttresgras textvert texte_majuscule fs-2">Nouvelle date :</label>
+                            <input type="text" id="nouvelle_date_rdv" name="nouvelle_date" class="form-control"
+                                   value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('Y-m-d') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nouvelle_heure" class="form-label fw-semibold">Nouvelle heure :</label>
-                            <select class="form-select" id="nouvelle_heure" name="nouvelle_heure" required>
-                                <option value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('H:i') }}">Heure actuelle : {{ rendezvous.dateRDV ? rendezvous.dateRDV|date('H:i') }}</option>
-                                <option value="09:00">09:00</option>
-                                <option value="10:00">10:00</option>
-                                <option value="11:00">11:00</option>
-                                <option value="14:00">14:00</option>
-                                <option value="15:00">15:00</option>
-                                <option value="16:00">16:00</option>
-                            </select>
+                    <!--  l'heure actuelle -->
+                    <label class="form-label fw-semibold">Heure actuelle :</label>
+                    <input type="text" class="form-control" 
+                            value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('H:i') }}" 
+                            >
+
+                        <!-- Choix de la nouvelle heure -->
+                        <label for="heure_rdv" class="form-label fw-semibold mt-3">Nouvelle heure :</label>
+                        <select class="form-select" id="heure_rdv" name="heure" required>
+                            <option value="">Sélectionnez une nouvelle heure</option>
+                            <option value="09:00">09:00 heures</option>
+                            <option value="10:10">10:10 heures</option>
+                            <option value="11:10">11:10 heures</option>
+                            <option value="12:10">12:10 heures</option>
+                            <option value="14:10">14:10 heures</option>
+                            <option value="15:10">15:10 heures</option>
+                            <option value="16:10">16:10 heures</option>
+                            <option value="17:10">17:10 heures</option>
+                        </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="service" class="form-label fw-semibold">Nouveau service :</label>
-                            <select id="service" name="service" class="form-select">
-                                <option value="{{ rendezvous.service ? rendezvous.service.nomService }}">Service actuel : {{ rendezvous.service ? rendezvous.service.nomService : 'Non défini' }}</option>
-                                {% for service in services %}
-                                    <option value="{{ service.nomService }}">{{ service.nomService }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+
+                    </div>
+
+                   <div class="mb-3">
+                    <label for="service" class="form-label fw-semibold">Modifier service :</label>
+                    <select id="service" name="service" class="form-select">
+                        {% set currentRdvService = rendezvous.rendezVousServices|first %}
+                        {% set currentServiceId = currentRdvService ? currentRdvService.services.id : null %}
+                        {% for service in services %}
+                            <option value="{{ service.id }}" {% if service.id == currentServiceId %}selected{% endif %}>{{ service.nomService }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
 
                         <div class="mb-3">
                             <label for="typeService" class="form-label fw-semibold">Nouveau type de service :</label>
                             <select id="typeService" name="typeService" class="form-select">
-                                <option value="{{ rendezvous.service ? rendezvous.service.typeService }}">Type actuel : {{ rendezvous.service ? rendezvous.service.typeService : 'Non défini' }}</option>
+                                {% set currentRdvService = rendezvous.rendezVousServices.first %}
+                                {% set currentNiveauServiceId = currentRdvService ? currentRdvService.niveauService.id : null %}
                                 {% for type in typesOffre %}
-                                    <option value="{{ type.typeService }}">{{ type.typeService }}</option>
+                                    <option value="{{ type.id }}" {% if type.id == currentNiveauServiceId %}selected{% endif %}>{{ type.nomNiveau }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -130,8 +150,6 @@
         </div>
     </div>
 </div>
-
-{#  ICI ON ANNULE LE RENDEZ VOUS #}
 
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -171,5 +189,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/mon-rdv.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script src="{{ asset('js/mon-rdv.js') }}"></script> {# Votre fichier JavaScript dédié #}
 {% endblock %}
