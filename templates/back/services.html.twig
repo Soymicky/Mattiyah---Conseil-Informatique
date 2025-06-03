@@ -1,0 +1,128 @@
+{# templates/front/accueil.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <h1>Services</h1>
+    <div class="container py-5">
+  {# --- Toggle nav entre Systèmes et Logiciels --- #}
+  <h2 class="mb-4 text-center">Catégorie</h2>
+  <ul class="nav nav-pills justify-content-center mb-5" id="servicesTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active rounded-pill px-4" id="systemes-tab"
+              data-bs-toggle="pill" data-bs-target="#systemes" type="button"
+              role="tab">Systèmes</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link rounded-pill px-4" id="logiciels-tab"
+              data-bs-toggle="pill" data-bs-target="#logiciels" type="button"
+              role="tab">Logiciels</button>
+    </li>
+  </ul>
+
+    {# ====== Onglet Systèmes ====== #}
+  <div class="tab-content" id="servicesTabContent">
+    {# Bouton de toggle #}
+    <div class="tab-pane fade show active" id="systemes" role="tabpanel">
+      {# Audit et optimisation IT #}
+      <div class="row align-items-center bg-success py-5">
+        <div class="col-lg-6 order-lg-1 ">
+          <h3>Audit et optimisation IT</h3>
+          <p>Évaluez et optimisez votre infrastructure informatique.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – Diagnostic et recommandations ciblées. Prix : 900 €.</li>
+            <li>⭐ <strong>Expert</strong> – Analyse approfondie & plan d’évolution. Prix : 2 500 €.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 text-center order-lg-2">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Audit IT">
+        </div>
+      </div>
+
+      {# Maintenance et assistance technique #}
+      <div class="row align-items-center bg-warning bg-opacity-25 py-5">
+        <div class="col-lg-6 text-center mb-3 mb-lg-0">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Maintenance">
+        </div>
+        <div class="col-lg-6">
+          <h3>Maintenance et assistance technique</h3>
+          <p>Un service réactif pour assurer la continuité de votre activité.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – Intervention ponctuelle. Prix : 300 € HT.</li>
+            <li>⭐ <strong>Expert</strong> – Audit complet & optimisation. Prix : 2 500 € HT.</li>
+          </ul>
+        </div>
+      </div>
+
+      {# Sécurisation et sauvegarde des données #}
+      <div class="row align-items-center bg-success py-5">
+        <div class="col-lg-6 order-lg-1">
+          <h3>Sécurisation et sauvegarde des données</h3>
+          <p>Protégez vos données et anticipez les risques.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – Mise en place d’un système de sauvegarde. Prix : 400 € HT.</li>
+            <li>⭐ <strong>Expert</strong> – Stratégie cybersécurité complète. Prix : 3 000 € HT.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 text-center order-lg-2">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Sécurité">
+        </div>
+      </div>
+    </div>
+
+            {# Deuxième partie  #}
+    {# ====== Onglet Logiciels ====== #}
+    <div class="tab-pane fade" id="logiciels" role="tabpanel">
+
+      {# Audit et gestion des licences #}
+      <div class="row align-items-center bg-success py-5">
+        <div class="col-lg-6">
+          <h3>Audit et gestion des licences</h3>
+          <p>Optimisez la gestion et les coûts de vos licences logicielles.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – État des lieux et mise en conformité. Prix : 900 €.</li>
+            <li>⭐ <strong>Expert</strong> – Rationalisation et stratégie d’optimisation. Prix : 2 500 €.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Licences">
+        </div>
+      </div>
+
+      {# Accompagnement au choix de logiciels #}
+      <div class="row align-items-center bg-warning bg-opacity-25 py-5">
+        <div class="col-lg-6 text-center mb-3 mb-lg-0">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Choix logiciels">
+        </div>
+        <div class="col-lg-6">
+          <h3>Accompagnement au choix de logiciels</h3>
+          <p>Trouvez les solutions les plus adaptées à votre activité.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – Analyse des besoins. Prix : 800 € HT.</li>
+            <li>⭐ <strong>Expert</strong> – Étude approfondie et mise en place. Prix : 3 500 € HT.</li>
+          </ul>
+        </div>
+      </div>
+
+      {# Support et dépannage logiciel #}
+      <div class="row align-items-center bg-success py-5">
+        <div class="col-lg-6">
+          <h3>Support et dépannage logiciel</h3>
+          <p>Assistance agile et efficace pour vos logiciels.</p>
+          <ul class="list-unstyled">
+            <li>💡 <strong>Standard</strong> – Installation & dépannage. Prix : 200 € HT.</li>
+            <li>⭐ <strong>Expert</strong> – Optimisation de workflow. Prix : 2 000 € HT.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Support logiciel">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  
+{% endblock %}

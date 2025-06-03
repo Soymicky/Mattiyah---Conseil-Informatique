@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prendre rendez-vous{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1>Prendre rendez-vous</h1>
+         <div>
+                {% if dejaRDV %}
+                 <div class="alert alert-info" role="alert">
+                        <p> Vous avez déjà un rendez-vous. Vous pouvez le modifier ou l'annuler depuis 
+                        <a href="{{ path('mon_rendez_vous') }}">votre espace de gestion</a></p>.
+                     </div>
+                {% else %}
+               
+            {% if app.user %}
+                <div class="mb-3 text-center">
+                    <label for="calendrier-jours" class="form-label  texttresgras textvert texte_majuscule fs-2">Date :</label>
+                    <div class="d-flex">
+                        <button type="button " id="mois-precedent" class="btn btn-outline-success me-2">&lt;</button>
+                        <span id="mois-en-cours" class="fw-semibold me-2 fs-3"></span>
+                        <button type="button" id="mois-suivant" class="btn btn-outline-success">&gt;</button>
+                    </div>
+                    <div>
+                        <select id="annee" class="form-select form-select-sm w-auto me-2"></select>
+                    </div>
+                    <div id="calendrier-jours" class="d-grid gap-2 mt-2" style="grid-template-columns: repeat(7, 1fr);">
+                    </div>
+                    <input type="hidden" id="input-date" name="date">
+                </div>
+
+                <form method="post" action="{{ path('enregistrer_rdv') }}" id="rdvForm">
+                    <div class="mb-3 text-center">
+                        <label for="liste-heures" class="form-label fw-bolder textvert texte_majuscule fs-2">Heure :</label>
+                        <div id="liste-heures" class="d-grid gap-2" style="grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));">
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">09:00</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">10:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">11:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">12:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">14:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">15:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">16:10</button>
+                            <button type="button" class="btn btn-outline-success rounded-md px-3 py-2 text-sm font-semibold">17:10</button>
+                        </div>
+                        <input type="hidden" id="input-heure" name="heure">
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Service choisi :</label> <br>                  
+                            {% for service in services %}
+                            <input type="checkbox"  name="services[]" value="{{ service.id }}">
+                            <label for="services[]">{{ service.nomService }}</label><br>
+                            {% endfor %}
+                            
+                       
+
+                        <label class="form-label">Type de service :</label>
+                        <select id="typeService" name="typeService" class="form-select">
+                            <option value="">Sélectionnez un type de service</option>
+                            {% for type in typesOffre %}
+                                <option value="{{ type.typeService }}">{{ type.typeService }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                    <button type="submit" id="validerBtn" class="btn btn-primary">Valider le rendez-vous</button>
+                </form>
+
+                <div class="mt-5 text-center ">
+                    <h1>Mon espace rendez-vous</h1>
+                    <p>Pour accéder à votre espace de rendez-vous, cliquez sur le bouton ci-dessous.</p>
+                    <a href="{{ path('mon_rendez_vous') }}" class="btn btn-success">Mon Rendez-vous</a>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Vous devez être connecté pour prendre rendez-vous.
+                </div>
+                <p>
+                    <a href="{{ path('connexion') }}" class="btn btn-primary">Se connecter</a>
+                    <a href="{{ path('inscription') }}" class="btn btn-secondary">Créer un compte</a>
+                </p>
+            {% endif %}
+        </div>
+         {% endif %}
+         </div>    
+         <div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/prendre-rdv.js') }}"></script>
+{% endblock %}

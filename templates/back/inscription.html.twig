@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('/public/js/indicatifs_pays.js') }}"></script>
+{% endblock %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Inscription</h1>
+
+        {{ form_start(inscriptionForm) }}
+    {{ form_row(inscriptionForm.nom) }}
+    {{ form_row(inscriptionForm.prenom) }}
+    {{ form_row(inscriptionForm.email) }}
+    <div class="form-group">
+     <div class="d-flex">
+                    <button type="button" class="btn btn-outline-secondary indicatif-trigger mr-2-" id="indicatif-toggle">
+                        Pays
+                    </button>
+                        {{ form_row(inscriptionForm.telephone) }}
+                        
+                    
+    </div>
+     <div id="indicatifs-liste" style="display: none; position: absolute; z-index: 1000; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; width: auto;">
+    </div>
+    {{ form_row(inscriptionForm.plainPassword) }}
+
+    <!-- Bouton d'envoi du formulaire -->
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+{{ form_end(inscriptionForm) }}
+
+
+    </div>
+{% endblock %}

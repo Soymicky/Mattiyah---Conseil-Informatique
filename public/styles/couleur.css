@@ -1,0 +1,264 @@
+.fondvert {
+    background-color: #022D2D;
+}
+
+.fondvert_outline {
+    
+    color: white;
+    border: solid 2px #022D2D ;
+}
+
+.textvert {
+    color: #022D2D;
+}
+
+.fondmarron {
+    background-color: #A65330;
+}
+
+.textmarron {
+    color:  #A65330 ;
+}
+
+.fondjaune {
+    background-color: #FCA41F;
+}
+
+.textjaune {
+    color:  #FCA41F ;
+}
+
+.fondrouge {
+    background-color: #D7212A;
+}
+
+.texterouge {
+    color: #D7212A;
+}
+
+/* TEXT */
+
+
+.textegras {
+    font-weight: bold; /* EPAISSEUR DE TEXTE */
+}
+
+.texttresgras {
+    font-weight: 800; /* EPAISSEUR DE TEXTE */
+}
+
+
+.texte_majuscule {
+
+    text-transform: uppercase;
+}
+
+.textjustify {
+    text-align: justify;
+}
+
+
+
+/* PAS DE LIGNE */
+a.noline {
+    text-decoration: none;
+}
+
+.plein-largeur {
+    margin: 0;
+  }
+
+
+  /* MARGE GENERAL  */
+  .marge_50 {
+    margin: 50px;
+}
+
+.marge_100 {
+    margin: 100px
+}
+
+.marge_200 {
+    margin: 150px;
+}
+
+/* MARGE TOP  */
+.marge_t {
+    margin-top: 50px;
+}
+
+.marge_t_25 {
+    margin-top: 25px;
+}
+
+.margin_t_100 {
+    margin-top: 100px;
+}
+
+/* MARGIN BOTTOM */
+.marge_b_50{
+    margin-bottom: 50px;
+}
+
+.marge_b2 {
+    margin-bottom: 100px;
+}
+
+
+.marge_b_200 {
+    margin-bottom: 200px;
+}
+
+.marge_b_300 {
+    margin-bottom: 300px;
+
+}
+.marge_b_400 {
+
+    margin-bottom: 400px;
+}
+
+
+/* MARGIN LEFT */
+
+.marge_l {
+    margin-left: 50px;
+}
+
+
+/* MARGIN RIGHT */
+.marge_r {
+    margin-right: 50px;
+}
+
+
+
+/* PADDING GENERAL */
+
+.padding_50 {
+    padding: 50px;
+}
+
+.padding_100 {
+    padding: 100px;
+}
+
+.padding_200 {
+    padding: 200px;
+}
+
+
+
+/* PADDING TOP */
+
+.padding20 {
+    padding: 20px;
+}
+
+.padding_t_50 {
+    padding-top: 50px;
+}
+
+.padding_t {
+    padding-top: 90px;
+}
+
+.padding_t_100 {
+    padding-top: 100px;
+}
+
+
+.padding_t_200 {
+    padding-top: 200px;
+}
+
+.padding_t_300 {
+    padding-top: 300;
+}
+
+/* PADDING BOTTOM */
+
+.padding_b_70 {
+    padding-bottom: 70px;
+}
+
+.padding_b_100 {
+    padding-bottom: 100px;
+}
+
+
+/* PADDING LEFT */
+
+.padding_l_50 {
+    padding-left: 50px;
+}
+
+/* PADDING TOP & BOTTOM */
+.padding_tb {
+    padding: 0 90px 90px 0;
+}
+
+.padding_tb_50 {
+    padding: 0 50px 50px 0;
+}
+
+.padding_tb_100 {
+    padding: 0 100px 100px 0;
+
+}
+
+/* Epaisseur bouton */
+
+.boutton_style1 {
+    margin: 0 520px;
+    height: 40px;
+}
+
+/* ELEMENTS ESTHETIQUE */
+.lignejaune {
+    height: 5px;
+    background-color: #FCA41F;
+    opacity: 1;
+    border: none;
+    margin: 0 500px 0 350px;
+}
+
+.endplacement {
+    margin-left: 700px;
+}
+
+
+/*  PARTIE CONTACT POSITION FIXE */
+.contact-float {
+    position: fixed;
+    top: 50%; 
+    right: 20px;
+    transform: translateY(-50%); 
+    background-color: #25D366; 
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px; 
+    border-radius: 50%;
+    text-decoration: none;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000; 
+  }
+  
+  .contact-float:hover {
+    background-color: #128C7E; 
+  }
+  
+  .contact-float img {
+    width: 80px; 
+    height: 80px;
+  }
+  
+ 
+  .contact-float img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block; 
+  }

@@ -1,0 +1,112 @@
+{# templates/front/accueil.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos – MATTIYAH{% endblock %}
+
+{% block body %}
+<div class="marge_50">
+
+  <!-- Hero -->
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <h1 class="display-4 text-warning">À propos de MATTIYAH</h1>
+      <p class="lead">
+        Créée en 2021, <strong>MATTIYAH</strong> guide les entreprises dans la gestion et l’optimisation de leurs systèmes et logiciels informatiques.
+        Passionné par la technologie, notre consultant propose des solutions sur-mesure pour garantir la performance et la sécurité de vos infrastructures IT.
+      </p>
+      <p>
+        Avec une expertise technique reconnue et une approche entièrement personnalisée, MATTIYAH accompagne chaque client vers une transformation digitale réussie : audit, maintenance, sécurisation et formation.
+      </p>
+    </div>
+    <div class="col-md-6 text-center">
+      <img src="{{ asset('images/about-hero.jpg') }}" alt="Consultant informatique" class="img-fluid rounded shadow-sm">
+    </div>
+  </div>
+
+  <!-- Expertise -->
+  <section class="padding_t_100">
+    <h2 class="padding_tb_50 d-flex justify-content-center">Notre expertise</h2>
+    <div class="row g-4 marge_b_300">
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <img src="{{ asset('images/icon-audit.svg') }}" class="card-img-top mx-auto mt-4" style="width:60px" alt="">
+          <div class="card-body">
+            <h5 class="card-title">Audit & Optimisation</h5>
+            <p class="card-text">Analyse complète de votre infrastructure, recommandations et mise en place de bonnes pratiques.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <img src="{{ asset('images/icon-maintenance.svg') }}" class="card-img-top mx-auto mt-4" style="width:60px" alt="">
+          <div class="card-body">
+            <h5 class="card-title">Maintenance & Support</h5>
+            <p class="card-text">Interventions réactives, assistance technique et suivi proactif pour garantir la continuité de service.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+          <img src="{{ asset('images/icon-securite.svg') }}" class="card-img-top mx-auto mt-4" style="width:60px" alt="">
+          <div class="card-body">
+            <h5 class="card-title">Sécurisation & Sauvegarde</h5>
+            <p class="card-text">Mise en place de stratégies de sauvegarde, chiffrement et hardening pour protéger vos données.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Valeurs -->
+  <section class=" padding_tb_100 fondvert text-white text-center align-item-center rounded">
+    <h2 class="text-warning mb-4 textjaune padding_t_50 fs-2 texte_majuscule">Nos valeurs</h2>
+    <div class="row gx-5 padding_l_50">
+      <div class="col-md-4 ">
+        <div class="bi bi-lightning-fill fs-1 text-warning mb-2"></div>
+        <h5 class="text-start fs-4">Excellence</h5>
+        <p class="textjustify">La qualité de nos services fait notre réputation. 
+        Nous portons une attention particulière sur l'exécution et le résultat..</p>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="bi bi-gear-fill fs-1 text-warning mb-2"></div>
+        <h5 class="text-start fs-4">Ecoute</h5>
+        <p class="textjustify">Le service client est au coeur de notre stratégie. 
+        Nos clientes doivent avoir la meilleure expérience possible.</p>
+      </div>
+
+      <div class="col-md-4">
+        <div class="bi bi-shield-lock-fill fs-1 text-warning mb-2"></div>
+        <h5 class="text-start fs-4">Créativité</h5>
+        <p class="textjustify">Nous souhaitons proposer des solutions différentes. 
+        Elles sont basées sur l'originalité et faire preuve de créativité.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clients -->
+  <section class=" text-center margin_t_100 marge_b_200">
+    <h2 class="padding_b_100 textegras texterouge">Ils nous ont fait confiance !</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-3 text-center">
+        <img src="{{ asset('/img/listelogo/LogoArom.png') }}" alt="Logo LogoArom" class="img-fluid" style="max-width: 150px;">
+        <p class="mt-2">Arom Office</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <img src="{{ asset('/img/listelogo/LogoVsRex.png') }}" alt="Logo VsRex" class="img-fluid" style="max-width: 150px;">
+        <p class="mt-2">Vs Rex</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <img src="{{ asset('/img/listelogo/LogoMiam.png') }}" alt="Logo Miam" class="img-fluid" style="max-width: 150px;">
+        <p class="mt-2">Miam gout</p>
+      </div>
+      <div class="col-md-3 text-center">
+        <img src="{{ asset('/img/listelogo/LogoBuildingKric.png') }}" alt=" Logo Building Kric" class="img-fluid" style="max-width: 150px;">
+        <p class="mt-2">Building Kric</p>
+      </div> 
+    </div>
+  </section>
+
+</div>
+{% endblock %}

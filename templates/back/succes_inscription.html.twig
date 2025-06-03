@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription réussie{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Félicitations, votre inscription a été réussie !</h1>
+        <p>Vous pouvez maintenant vous connecter en cliquant sur le bouton ci-dessous.</p>
+        <a href="{{ path('connexion') }}" class="btn btn-primary">Se connecter</a>
+    </div>
+{% endblock %}

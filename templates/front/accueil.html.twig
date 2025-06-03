@@ -1,0 +1,322 @@
+{# templates/front/accueil.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+{# CONTACT #}
+<a href="{{ path('contact') }}" class="contact-float">
+  <img src="img/contactez-nous-2.png" alt="Contactez-nous par téléphone et email">
+</a>
+    <!-- HERO BANNER -->
+<section class="bg-dark text-white text-center padding_100" style="background-image: url('/img/img_accueil/3d-render-low-poly-plexus-design-network-communications.jpg'); background-size: cover; background-position: center;">
+ <div class="position-relative bg-image" style="background-image: url('{{ asset('images/votre-image-de-fond.jpg') }}'); min-height: 400px; background-size: cover; background-position: center;">
+  <div class="position-absolute top-0 start-0 d-flex align-items-center h-100 p-5 text-white">
+    <h1 class="display-5 fw-bold margin-left=0 text-start">
+        Boostez vos projets IT
+     avec l'expertise qu'il vous faut </h1>
+  </div>
+</div>
+</section>
+
+<!-- BIENVENUE -->
+<section class="fondvert textjaune text-start py-4">
+  <div class="container marge_50">
+    <h2 class="mb-3 fs-1">Bienvenue !</h2>
+    <p class="mb-0 text-white">Profitez de l’expertise de Mattiyah et obtenez un accompagnement sur mesure pour vos projets IT.<br>
+    Prenez contact avec notre expert ou réservez directement votre consultation.</p>
+  </div>
+</section>
+
+<!-- POURQUOI CHOISIR -->
+<section class="py-5 marge_100">
+  <div class="container">
+    <h3 class="text-center ">POURQUOI CHOISIR NOTRE SERVICE ?</h3>
+    <hr class="lignejaune mb-5">
+    <div class="row text-center">
+      <div class="col-md-3 mb-3">✅<strong>Praticité</strong><br>Réservez en ligne en quelques clics</div>
+      <div class="col-md-3 mb-3">✅<strong>Expertise</strong><br>Conseils adaptés pour besoins IT</div>
+      <div class="col-md-3 mb-3">✅<strong>Personnalisation</strong><br>Sur mesure et résultats concrets</div>
+      <div class="col-md-3 mb-3">✅<strong>Flexibilité</strong><br>Consultant selon vos disponibilités</div>
+    </div>
+  </div>
+</section>
+
+<!-- NOS SERVICES -->
+<section class="fondvert text-white py-5">
+  <div class="container marge_50">
+    <h3 class="text-center textegras textjaune mb-4 fs-1">NOS SERVICES</h3>
+    <p class="text-center mb-5">Découvrez nos services personnalisés conçus pour répondre aux défis uniques de votre entreprise.
+    Découvrez nos services personnalisés conçus pour répondre aux défis uniques de votre entreprise. Chaque solution est pensée pour optimiser vos processsus et assurer une performance maximale,
+     avec l’accompagnment de votre consultat Mattiyah.</p>
+     {# Tableau et tableau associatif de services #}
+     {% set services = [
+      {
+        'nom': 'Audit et Optimisation IT',
+        'description': 'Évaluez et optimisez vos systèmes pour une meilleure performance et sécurité.',
+        'motcle': ['Analyse', 'Optimisation', 'Sécurité'],
+        'prix': '900€',
+        'slug': 'audit-optimisation-it',
+        'img': 'img/logiciels/audit-licences.jpg'
+      },
+      {
+        'nom': 'Assistance Technique',
+        'description': 'Pour garantir la performance continue de vos systèmes.',
+        'motcle': ['Réactivité', 'Maintenance', 'Support'],
+        'prix': '300€',
+        'slug': 'assistance-technique',
+        'img': 'img/logiciels/audit-licences.jpg'
+      },
+      {
+        'nom': 'Sécurisation et Sauvegarde des Données',
+        'description': 'Prévenez la perte des données et les risques liés aux cyberattaques.',
+        'motcle': ['Protection', 'Prévention', 'Fiabilité'],
+        'prix': '500€',
+        'slug': 'securisation-sauvegarde-donnees',
+        'img': 'img/logiciels/audit-licences.jpg'
+      }
+    ] %}
+
+
+    <!-- Systèmes informatiques -->
+     <h5 class="text-warning text-center mb-3">
+    <span class="fondjaune p-2 textvert texttresgras" >Systèmes Informatiques</h5></span>
+    <div class="row py-4 my-4">
+      {% for service in services %}
+      <div class="col-md-4 mb-3">
+        <div class="card h-100">
+          <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Image de service">
+          <div class="card-body">
+            <h6 class="card-title">{{ service.nom }}</h6>
+            <p class="card-text">{{service.description}}.</p>
+            <ul class="list-unstyled">
+            {% for motcle in service.motcle %}
+                 <li>✅ {{motcle}}</li> 
+            {% endfor %}
+            </ul>
+        
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong>À partir de</strong> {{ service.prix }}</p>
+                <a href="{{ path('services', {'slug': service.slug}) }}" class="btn btn-primary btn-sm">Voir plus</a>
+              </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+     {# Tableau et tableau associatif de logiciels #}
+     {% set logiciels = [
+      {
+        'nom': 'Audit et gestions des licences ',
+        'description': 'Réduisez vos coûts et assurez la conformité avec un audit de vos licences.',
+        'motcle': ['Audit', 'Conformité', 'Réduction des couts'],
+        'prix': '950€',
+        'slug': 'audit-optimisation-it',
+        'img': 'img/logiciels/audit-licences.jpg'
+      },
+      {
+        'nom': 'Accompagnement au choix des logiciels',
+        'description': 'Conseils et analyse pour choisir les logiciels adaptés à vos besoins et optimiser vos processus.',
+        'motcle': ['Conseil', 'Adaptation', 'Optimisation'],
+        'prix': '500',
+        'slug': 'assistance-technique',
+        'img': 'img/logiciels/audit-licences.jpg'
+      },
+      {
+        'nom': 'Sécurisation et Sauvegarde des Données',
+        'description': 'Prévenez la perte des données et les risques liés aux cyberattaques.',
+        'motcle': ['Protection', 'Prévention', 'Fiabilité'],
+        'prix': '200€',
+        'slug': 'securisation-sauvegarde-donnees',
+        'img': 'img/logiciels/audit-licences.jpg'
+      }
+    ] %}
+
+
+
+    <!-- Logiciels informatiques -->
+    <h5 class="text-warning text-center mb-3">
+    <span class="fondjaune p-2 textvert texttresgras " >Logiciels Informatiques</h5></span>
+    <div class="row my-4 py-4">
+      {% for logiciel in logiciels %}
+        <div class="col-md-4 mb-3">
+        <div class="card h-100 mt-3">
+          <img src="https://via.placeholder.com/300x150" class="card-img-top" alt="Image de service">
+          <div class="card-body">
+            <h6 class="card-title">{{ logiciel.nom }}</h6>
+            <p class="card-text">{{logiciel.description}}.</p>
+            <ul class="list-unstyled">
+            {% for motcle in logiciel.motcle %}
+                 <li>✅ {{motcle}}</li> 
+            {% endfor %}
+            </ul>
+        
+            <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0"><strong>À partir de</strong> {{ logiciel.prix }}</p>
+                <a href="{{ path('services', {'slug': logiciel.slug}) }}"class="noline texttresgras">Voir plus</a>
+              </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4  fondjaune boutton_style1 d-flex justify-content-center align-items-center">
+    <a href="{{ path('services') }}" class="noline texttresgras textvert fs-5">Voir en details</a>
+    </div>
+  </div>
+</section>
+
+<!-- A PROPOS -->
+<section class="py-5 marge_100">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-4 text-center">
+        <img src="https://via.placeholder.com/200" class="rounded-circle mb-3" alt="Fondateur">
+      </div>
+      <div class="col-md-8">
+        <h4 class="fs-1">Ludovic L</h4>
+        <p class="text-danger text textegras text-jusitfy">Fondateur et consultant expert en systèmes et logiciels informatiques</p>
+        <p>
+          Crée en 2021, MATTIYAH guide les entreprises dans les gestion et l’optimisation de leurs systèmes et logiciels informatiques.<br>
+          Passionné par la technologie, il propose des solutions sur mesure pour garantir la performance et la sécurité des infrastructures IT.
+        Avec une expertise technique et une approche personnalisée, il accompagne chaque client vers leur transformation
+        </p>
+        <div class="text-center d-flex  align-items-center" >
+        <a href="{{ path('apropos') }}" class="btn fondmarron btn-sm  p-2 textegras text-white fs-5 ">Voir plus</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUE FAIRE D'AUTRE ? -->
+<section class="fondvert text-white">
+  <div class="container padding_100">
+    <h4 class="text-center textjaunee texte_majuscule">Que puis-je faire sur le site ?</h4>
+    <p class=" padding_b_70 text-center">Découvrez rapidement ce que vous pouvez faire ici.
+            Explorez les options pour interagir avec nos services.<br>
+            Votre prochaine étape IT est peut-être ici. 
+        lorem ipsum lor</p>
+    <div class="row text-center">
+  {% set options = [
+    {
+        'icon': 'https://via.placeholder.com/100', 'option': 'Consulter nos services ',
+        'description': 'Planifiez facilement vos consultations à tout moment.'
+    },
+    {
+        'icon': 'https://via.placeholder.com/100', 'option': 'Envoyer un mail pour un premier contact',
+        'description': 'Posez vos questions et obtenez des réponses sans engagement.'
+    },
+    {
+        'icon': 'https://via.placeholder.com/100', 'option': 'Prendre un rendez-vous en ligne ',
+        'description': "Partagez votre expérience et aidez d'autres utilisateurs à faire le bon choix."
+    },
+
+]%}
+
+<div class="row text-center d-flex flex-wrap">
+    {% for option in options %}
+        <div class="col-md-4 mb-3 d-flex align-items-stretch">
+            <div class="bg-secondary p-3 rounded d-flex justify-content-center align-items-center">
+                <img src="{{ option.icon }}" alt="Placeholder Icône" class="rounded-circle me-3 flex-shrink-0" style="width: 50px; height: 50; object-fit: cover;">
+                <div class="d-flex flex-column justify-content-between">
+                    <div>
+                        <h6 class="textegras text-start">{{ option.option }}</h6>
+                        <p class="small-text text-start">{{ option.description }}</p>
+                    </div>
+                    <a href="#" class="btn btn-warning btn-sm align-item-center">Explorer</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+    </div>
+  </div>
+</section>
+
+{# ESPACE COMMENTAIRE #}
+
+<section class="py-5">
+    <div class="container">
+        <h4 class="text-center mb-4">Avis de nos clients</h4>
+        {% set avis_clients = [
+            {
+                'photo_profil': 'https://via.placeholder.com/80/FFC107/FFFFFF?Text=Client1',
+                'prenom': 'Jean',
+                'nom': 'Dupont',
+                'note': 5,
+                'service_concerne': ' Support et dépannage logiciel',
+                'date': date('20-05-2025'),
+                'heure': date('10:30'),
+                'commentaire': 'Excellent premier contact ! Très professionnel et à l\'écoute de mes besoins. Je recommande vivement.'
+            },
+            {
+                'photo_profil': 'https://via.placeholder.com/80/28A745/FFFFFF?Text=Client2',
+                'prenom': 'Sophie',
+                'nom': 'Martin',
+                'note': 4,
+                'service_concerne': 'Audit et optimisation IT',
+                'date': date('20-05-2025'),
+                'heure': date('14:00'),
+                'commentaire': 'L\'aide apportée pour le choix de logiciel a été très précieuse. Un accompagnement de qualité.'
+            },
+            {
+                'photo_profil': 'https://via.placeholder.com/80/007BFF/FFFFFF?Text=Client3',
+                'prenom': 'Pierre',
+                'nom': 'Lefevre',
+                'note': 5,
+                'service_concerne': 'Maintenance et assistance technique',
+                'date': date('20-05-2025'),
+                'heure': date('16:45'),
+                'commentaire': 'Très satisfait des solutions de sécurité mises en place. Je me sens beaucoup plus serein quant à la protection de mes données.'
+            },
+        ] %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for avis in avis_clients %}
+                <div class="col  d-flex align-items-stretch d-flex flex-column">
+                    <div class="card h-100 fondvert text-white shadow-sm padding_b_70">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <div class="profile-circle rounded-circle overflow-hidden mb-2 border border-2" style="width: 80px; height: 80px;">
+                                <img src="{{ avis.photo_profil }}" alt="{{ avis.prenom }} {{ avis.nom }}" class="w-100 h-100 object-fit-cover">
+                            </div>
+                            <h6 class="card-title text-center mb-1">{{ avis.prenom }} {{ avis.nom }}</h6>
+                            <div class="star-rating mb-2">
+                                {% for i in 1..avis.note %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% endfor %}
+                                {% for i in avis.note + 1..5 %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endfor %}
+                            </div>
+                            <div class="comment-box border p-3 rounded w-100 bg-white text-black">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fw-bold">{{ avis.service_concerne }}</span>
+                                    <small class="text-muted">{{ avis.date|date('d/m/Y') }} à {{ avis.heure|date('H:i') }}</small>
+                                </div>
+                                <p class="card-text h-100">{{ avis.commentaire }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p class="text-center">Aucun avis client pour le moment.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- DERNIER MESSAGE -->
+<section class="bg-white padding_t padding_b_70 ">
+  <div class="container text-center">
+    <h5 class="mb-3 fs-2 text-start">Prêt à donner vie à vos projets IT ?</h5>
+    <p class="text-start fs-4">Contactez-nous dès aujourd’hui en vous inscrivant et/ou connectant pour des solutions sur mesure.</p>
+    <a href="{{ path('prendre_rdv') }}" class="btn btn-primary">Prendre rendez-vous</a>
+  </div>
+</section>
+
+  
+{% endblock %}

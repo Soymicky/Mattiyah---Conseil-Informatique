@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+    <h1>Ravie de vous revoir</h1>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.motDePasse) }}
+
+        {# Garde uniquement ce bouton, avec le style Bootstrap #}
+        {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+
+    {{ form_end(form) }}
+
+    <p><a href="{{ path('inscription') }}">Pas de compte ? Inscrivez-vous</a></p>
+{% endblock %}

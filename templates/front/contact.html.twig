@@ -1,0 +1,60 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<div class="container  mb-5">
+    <!-- Intro -->
+  <div class="row mb-5" >
+    <div class="col-md-8">
+      <h1 class="fw-bold">Hello !</h1>
+      <span class="d-block mb-3" style="width: 50px; height: 4px; background-color: #FCA41F;"></span>
+      <p class="text-muted">
+        Besoin d’informations et connaître votre souhait de service ? Remplissez le formulaire ci-dessous pour un
+        <strong>premier contact</strong> avec votre consultant.
+      </p>
+    </div>
+  </div>
+
+  <!-- Formulaire + Visuel -->
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="p-4" style="background-color: #0b2d2f; border-radius: .75rem; color: #fff;">
+        <h3 class="mb-3" style="color: #FCA41F;">Premier contact</h3>
+        <p class="small">
+          Contactez-nous en un instant, sans tracas ! Posez vos questions, obtenez des réponses rapides,<br>
+          sans créer de compte ni vous connecter.
+        </p>
+
+        {{ form_start(contactForm) }}
+          <div class="row g-3 mb-3">
+            <div class="col-sm-6">{{ form_row(contactForm.nom) }}</div>
+            <div class="col-sm-6">{{ form_row(contactForm.prenom) }}</div>
+          </div>
+          {{ form_row(contactForm.entreprise) }}
+          {{ form_row(contactForm.email) }}
+          {{ form_row(contactForm.telephone) }}
+          {{ form_row(contactForm.service) }}
+          {{ form_row(contactForm.message) }}
+
+          <div class="mt-3">
+            {{ form_widget(contactForm.envoyer) }}
+          </div>
+        {{ form_end(contactForm) }}
+
+      </div>
+    </div>
+
+    <div class="col-lg-6 mt-4 mt-lg-0">
+      <div style="background-color: #ccc; height: 100%; min-height: 400px; border-radius: .75rem;">
+        <img src="https://via.placeholder.com/600x400"
+             class="img-fluid rounded"
+             alt="Illustration contact">
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+  
+{% endblock %}

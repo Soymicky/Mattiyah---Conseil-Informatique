@@ -1,0 +1,15 @@
+
+{% extends 'base.html.twig' %}
+{% block body %}
+    <p><strong>Nom:</strong> {{ data.nom }}</p>
+    <p><strong>Prénom:</strong> {{ data.prenom }}</p>
+    {% if data.entreprise is defined and data.entreprise %}
+        <p><strong>Entreprise:</strong> {{ data.entreprise }}</p>
+    {% endif %}
+    <p><strong>Email:</strong> {{ data.email }}</p>
+    {% if data.telephone is defined and data.telephone %}
+        <p><strong>Téléphone:</strong> {{ data.telephone }}</p>
+    {% endif %}
+    <p><strong>Service demandé:</strong> {{ data.service }}</p>
+    <p><strong>Message:</strong><br>{{ data.message|nl2br }}</p>
+{% endblock %}
