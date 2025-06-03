@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\RendezVousRepository;
@@ -21,11 +22,9 @@ class RendezVous
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $statut = null;
 
-    #[ORM\OneToOne(inversedBy: 'rendezVous', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'rendezVousList')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
-
-    // #[ORM\ManyToOne(inversedBy: 'rendezVousList')]
-    // private ?Services $service = null;
 
     #[ORM\OneToOne(mappedBy: 'rendezVous', cascade: ['persist', 'remove'])]
     private ?AvisClient $avisClient = null;
@@ -33,29 +32,17 @@ class RendezVous
     /**
      * @var Collection<int, Services>
      */
-    #[ORM\ManyToMany(targetEntity: Services::class)]
+    #[ORM\ManyToMany(targetEntity: Services::class, inversedBy: 'rendezVousList')]
     private Collection $services;
+
+    #[ORM\ManyToOne(inversedBy: 'rendezVousList')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?NiveauService $niveauService = null;
 
     public function __construct()
     {
         $this->services = new ArrayCollection();
     }
-
-    // SUPPRIMER CES LIGNES :
-    // #[ORM\Column(length: 100, nullable: true)]
-    // private ?string $typeService = null;
-
-    // public function getTypeService(): ?string
-    // {
-    //     return $this->typeService;
-    // }
-
-    // public function setTypeService(?string $typeService): static
-    // {
-    //     $this->typeService = $typeService;
-
-    //     return $this;
-    // }
 
     public function getId(): ?int
     {
@@ -98,18 +85,6 @@ class RendezVous
         return $this;
     }
 
-    // public function getService(): ?Services
-    // {
-    //     return $this->service;
-    // }
-
-    // public function setService(?Services $service): static
-    // {
-    //     $this->service = $service;
-
-    //     return $this;
-    // }
-
     public function getAvisClient(): ?AvisClient
     {
         return $this->avisClient;
@@ -117,11 +92,6 @@ class RendezVous
 
     public function setAvisClient(?AvisClient $avisClient): static
     {
-        // unset the owning side of the relation if necessary
-        if ($avisClient === null && $this->avisClient !== null) {
-            $this->avisClient->setRendezVous(null);
-        }
-
         // set the owning side of the relation if necessary
         if ($avisClient !== null && $avisClient->getRendezVous() !== $this) {
             $avisClient->setRendezVous($this);
@@ -152,6 +122,18 @@ class RendezVous
     public function removeService(Services $service): static
     {
         $this->services->removeElement($service);
+
+        return $this;
+    }
+
+    public function getNiveauService(): ?NiveauService
+    {
+        return $this->niveauService;
+    }
+
+    public function setNiveauService(?NiveauService $niveauService): static
+    {
+        $this->niveauService = $niveauService;
 
         return $this;
     }

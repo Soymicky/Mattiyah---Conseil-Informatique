@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use App\Repository\ServicesRepository;
@@ -17,16 +18,22 @@ class Services
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomService = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\OneToMany(targetEntity: Utilisateur::class, mappedBy: 'service')]
-    private Collection $utilisateurs;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $descriptionService = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $typeOffre = null;
+
+    #[ORM\ManyToOne(inversedBy: 'servicesList')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?NiveauService $niveauService = null;
+
+    #[ORM\ManyToMany(targetEntity: RendezVous::class, mappedBy: 'services')]
+    private Collection $rendezVousList;
 
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
+        $this->rendezVousList = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -46,32 +53,62 @@ class Services
         return $this;
     }
 
-    /**
-     * @return Collection<int, Utilisateur>
-     */
-    public function getUtilisateurs(): Collection
+    public function getDescriptionService(): ?string
     {
-        return $this->utilisateurs;
+        return $this->descriptionService;
     }
 
-    public function addUtilisateur(Utilisateur $utilisateur): static
+    public function setDescriptionService(?string $descriptionService): static
     {
-        if (!$this->utilisateurs->contains($utilisateur)) {
-            $this->utilisateurs->add($utilisateur);
-            $utilisateur->setService($this);
-        }
+        $this->descriptionService = $descriptionService;
 
         return $this;
     }
 
-    public function removeUtilisateur(Utilisateur $utilisateur): static
+    public function getTypeOffre(): ?string
     {
-        if ($this->utilisateurs->removeElement($utilisateur)) {
-            // set the owning side to null (unless already changed)
-            if ($utilisateur->getService() === $this) {
-                $utilisateur->setService(null);
-            }
-        }
+        return $this->typeOffre;
+    }
+
+    public function setTypeOffre(?string $typeOffre): static
+    {
+        $this->typeOffre = $typeOffre;
+
+        return $this;
+    }
+
+    public function getNiveauService(): ?NiveauService
+    {
+        return $this->niveauService;
+    }
+
+    public function setNiveauService(?NiveauService $niveauService): static
+    {
+        $this->niveauService = $niveauService;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, RendezVous>
+     */
+    public function getRendezVousList(): Collection
+    {
+        return $this->rendezVousList;
+    }
+
+    public function addRendezVousList(RendezVous $rendezVousList): static
+    {
+        $this->rendezVousList->add($rendezVousList);
+        $rendezVousList->addService($this);
+
+        return $this;
+    }
+
+    public function removeRendezVousList(RendezVous $rendezVousList): static
+    {
+        $this->rendezVousList->removeElement($rendezVousList);
+        $rendezVousList->removeService($this);
 
         return $this;
     }

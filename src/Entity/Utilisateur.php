@@ -3,11 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\UtilisateurRepository;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
@@ -38,14 +39,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dtModification = null;
 
-    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
-    private ?Services $service = null;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: RendezVous::class)]
+    private Collection $rendezVousList;
 
-    #[ORM\OneToOne(mappedBy: 'utilisateur', cascade: ['persist', 'remove'])]
-    private ?RendezVous $rendezVous = null;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: AvisClient::class, cascade: ['persist', 'remove'])]
+    private Collection $avisClients;
 
-    // #[Assert\NotCompromisedPassword]
     private ?string $plainPassword = null;
+
+    public function __construct()
+    {
+        $this->rendezVousList = new ArrayCollection();
+        $this->avisClients = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -129,36 +135,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getService(): ?Services
-    {
-        return $this->service;
-    }
-
-    public function setService(?Services $service): static
-    {
-        $this->service = $service;
-        return $this;
-    }
-
-    public function getRendezVous(): ?RendezVous
-    {
-        return $this->rendezVous;
-    }
-
-    public function setRendezVous(?RendezVous $rendezVous): static
-    {
-        if ($rendezVous === null && $this->rendezVous !== null) {
-            $this->rendezVous->setUtilisateur(null);
-        }
-
-        if ($rendezVous !== null && $rendezVous->getUtilisateur() !== $this) {
-            $rendezVous->setUtilisateur($this);
-        }
-
-        $this->rendezVous = $rendezVous;
-        return $this;
-    }
-
     public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
@@ -170,23 +146,80 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @see UserInterface
+     */
     public function eraseCredentials(): void
     {
+        // If you store any temporary, sensitive data on your user, clear it here
         $this->plainPassword = null;
     }
 
-    public function getRoles(): array
+    /**
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
     {
-        return ['ROLE_USER'];
+        return (string) $this->email;
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getPassword(): ?string
     {
         return $this->motDePasse;
     }
 
-    public function getUserIdentifier(): string
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
     {
-        return $this->email;
+        return ['ROLE_USER'];
+    }
+
+    /**
+     * @return Collection<int, RendezVous>
+     */
+    public function getRendezVousList(): Collection
+    {
+        return $this->rendezVousList;
+    }
+
+    public function addRendezVousList(RendezVous $rendezVousList): static
+    {
+        $this->rendezVousList->add($rendezVousList);
+        $rendezVousList->setUtilisateur($this);
+        return $this;
+    }
+
+    public function removeRendezVousList(RendezVous $rendezVousList): static
+    {
+        $this->rendezVousList->removeElement($rendezVousList);
+        $rendezVousList->setUtilisateur(null);
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AvisClient>
+     */
+    public function getAvisClients(): Collection
+    {
+        return $this->avisClients;
+    }
+
+    public function addAvisClient(AvisClient $avisClient): static
+    {
+        $this->avisClients->add($avisClient);
+        $avisClient->setUtilisateur($this);
+        return $this;
+    }
+
+    public function removeAvisClient(AvisClient $avisClient): static
+    {
+        $this->avisClients->removeElement($avisClient);
+        $avisClient->setUtilisateur(null);
+        return $this;
     }
 }
