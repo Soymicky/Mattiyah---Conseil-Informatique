@@ -24,17 +24,10 @@ class NiveauService
     #[ORM\OneToMany(mappedBy: 'niveauService', targetEntity: Services::class)]
     private Collection $servicesList;
 
-    /**
-     * @var Collection<int, RendezVousService>
-     */
-    #[ORM\OneToMany(targetEntity: RendezVousService::class, mappedBy: 'niveauService')]
-    private Collection $rendezVousServices;
-
     public function __construct()
     {
         $this->servicesList = new ArrayCollection();
         // La ligne $this->rendezVousList = new ArrayCollection(); a été supprimée
-        $this->rendezVousServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,33 +77,5 @@ class NiveauService
         return $this;
     }
 
-    /**
-     * @return Collection<int, RendezVousService>
-     */
-    public function getRendezVousServices(): Collection
-    {
-        return $this->rendezVousServices;
-    }
-
-    public function addRendezVousService(RendezVousService $rendezVousService): static
-    {
-        if (!$this->rendezVousServices->contains($rendezVousService)) {
-            $this->rendezVousServices->add($rendezVousService);
-            $rendezVousService->setNiveauService($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRendezVousService(RendezVousService $rendezVousService): static
-    {
-        if ($this->rendezVousServices->removeElement($rendezVousService)) {
-            // set the owning side to null (unless already changed)
-            if ($rendezVousService->getNiveauService() === $this) {
-                $rendezVousService->setNiveauService(null);
-            }
-        }
-
-        return $this;
-    }
+    // Les méthodes getRendezVousList, addRendezVousList, removeRendezVousList ont été supprimées
 }
