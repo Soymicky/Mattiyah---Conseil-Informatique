@@ -56,10 +56,10 @@
                        
 
                         <label class="form-label">Type de service :</label>
-                        <select id="typeService" name="typeService" class="form-select">
+                        <select id="" name="typeService" class="form-select">
                             <option value="">Sélectionnez un type de service</option>
-                            {% for type in typesOffre %}
-                                <option value="{{ type.typeService }}">{{ type.typeService }}</option>
+                            {% for service in services %}
+                                <option value="{{ services.id }}">{{ type.nomService }}</option>
                             {% endfor %}
                         </select>
                     </div>
