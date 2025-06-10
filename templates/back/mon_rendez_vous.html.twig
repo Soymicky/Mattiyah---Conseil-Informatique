@@ -190,17 +190,22 @@
         <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}"> 
         {# Le champ 'rendezvous_id' est retiré, car l'avis n'est plus lié à un rendez-vous spécifique. #}
 
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Note de satisfaction (1-5 étoiles) :</label>
-            <div class="rating-stars d-flex gap-2">
-                {% for i in 1..5 %}
-                    <input type="radio" id="star_avis_{{ i }}" name="note" value="{{ i }}" class="d-none" required>
-                    <label for="star_avis_{{ i }}" class="star-label fs-4 cursor-pointer" data-rating="{{ i }}">
-                        <i class="bi bi-star-fill"></i>
-                    </label>
-                {% endfor %}
+      <div class="mb-3">
+    <label class="form-label fw-semibold mb-2">Note de satisfaction (1-5) :</label>
+
+    {# Utilise des classes Bootstrap pour un affichage en ligne et un espacement propres #}
+    <div class="d-flex flex-wrap gap-3">
+        {% for i in 1..5 %}
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="note" id="note_avis_{{ i }}"  value="{{ i }}" {# La valeur envoyée à Symfony sera le numéro (1, 2, 3, etc.) #}
+                    required> {# Oblige l'utilisateur à choisir une note #}
+                <label class="form-check-label" for="note_avis_{{ i }}">
+                    {{ i }} {# Affiche le numéro à côté du bouton radio #}
+                </label>
             </div>
-        </div>
+        {% endfor %}
+    </div>
+</div>
 
         <div class="mb-3">
             <label for="avis_titre" class="form-label fw-semibold">Titre de votre avis <strong class="texte20px fw-light">(facultatif)</strong> :</label>

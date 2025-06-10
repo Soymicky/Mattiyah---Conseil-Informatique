@@ -30,4 +30,35 @@ document.addEventListener('DOMContentLoaded', function() {
            { from: "17:10", to: "17:10" },
         ]
     });
+
+
+// PARTIE AVIS CLIENT :  // js/mon-rdv.js
+
+    const ratingStarsContainer = $('.rating-stars');
+
+    ratingStarsContainer.on('click', '.star-label', function() {
+        const clickedRating = $(this).data('rating'); // Récupère la note de l'étoile cliquée
+
+        // 1. Gérer l'état visuel des étoiles
+        // Supprime la classe 'selected' de toutes les étoiles dans ce conteneur
+        $(this).parent().find('.star-label').removeClass('selected');
+
+        // Ajoute la classe 'selected' aux étoiles jusqu'à celle qui a été cliquée
+        // .prevAll() sélectionne tous les frères précédents
+        // .addBack() inclut l'élément actuel (l'étoile cliquée)
+        $(this).prevAll('.star-label').addBack().addClass('selected');
+
+        // 2. Cocher le bouton radio correspondant
+        // Trouver le radio bouton avec l'ID correspondant à la note cliquée
+        $('#star_avis_' + clickedRating).prop('checked', true);
+    });
+
+    // Optionnel : Gérer l'état des étoiles au chargement de la page si une note est déjà sélectionnée (ex: après une erreur de validation)
+    // Cela vérifie si un radio est déjà coché et met à jour l'affichage des étoiles
+    ratingStarsContainer.find('input[type="radio"][name="note"]:checked').each(function() {
+        const initialRating = $(this).val();
+        ratingStarsContainer.find('.star-label').removeClass('selected');
+        ratingStarsContainer.find('.star-label[data-rating="' + initialRating + '"]').prevAll('.star-label').addBack().addClass('selected');
+    });
+});
 });

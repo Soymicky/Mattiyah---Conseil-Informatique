@@ -59,6 +59,7 @@
 
 .texte20px {
     font-size: 15px;
+    
 }
 
 
@@ -274,3 +275,30 @@ a.noline {
       max-height: 100%;
       display: block; 
   }
+
+
+  /*  AVIS CLIENT ETOILE */
+ 
+.form-check-input:checked {
+    background-color: yellow; 
+    border-color: #FFD700; 
+}
+
+
+.form-check-input:checked + .form-check-label {
+    font-weight: bold;
+}
+.form-check {
+    transition: transform 0.2s ease-in-out; /* Pour une animation douce */
+    cursor: pointer; /* Pour indiquer que c'est interactif */
+}
+
+/* Quand on survole ce conteneur */
+.form-check:hover {
+    transform: scale(1.2); /* Grossit l'ensemble (bouton + chiffre) de 20% */
+}
+
+/* Optionnel : Rendre le chiffre gras au survol (même si pas coché) */
+.form-check:hover .form-check-label {
+    font-weight: bold;
+}
