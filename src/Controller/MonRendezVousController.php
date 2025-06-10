@@ -21,32 +21,32 @@ final class MonRendezVousController extends AbstractController
     #[Route('mon_rendez_vous', name: 'mon_rendez_vous')]
     public function index(
         EntityManagerInterface $entityManager,
-        NiveauServiceRepository $niveauServiceRepository // Injectez le NiveauServiceRepository ici
+        NiveauServiceRepository $niveauServiceRepository
     ): Response {
         $utilisateur = $this->getUser();
         $rendezvous = null; // Initialisez à null par défaut
 
         if ($utilisateur) {
-            // Cherche le rendez-vous de l'utilisateur connecté
+            // Cherche le rendez-vous de l'utilisateur connecté.
+            // Ceci est utilisé pour l'affichage de la page de rendez-vous.
             $rendezvous = $entityManager->getRepository(RendezVous::class)
                 ->findOneBy(['utilisateur' => $utilisateur]);
         }
 
-        // Récupère tous les services pour le formulaire de modification (select 'service')
+        // Récupère tous les services et niveaux de service pour les afficher dans les formulaires (rendez-vous et avis)
         $services = $entityManager->getRepository(Services::class)->findAll();
         
-        // Récupère tous les niveaux de service pour le formulaire de modification (select 'typeService')
-        // C'est ici que l'erreur 'typeService' était indirectement causée.
-        $typesOffre = $niveauServiceRepository->findAll(); // Correction: on récupère les NiveauService
+        // --- MODIFICATION ICI : On passe la variable 'niveauService' (au singulier) au template ---
+        $niveauService = $niveauServiceRepository->findAll();
 
         return $this->render('/back/mon_rendez_vous.html.twig', [
-            'rendezvous' => $rendezvous,
-            'services' => $services, // Passé au Twig pour la liste des services
-            'typesOffre' => $typesOffre, // Passé au Twig pour la liste des niveaux de service
+            'rendezvous' => $rendezvous, // Passé pour l'affichage du rendez-vous
+            'services' => $services,     // Passé pour la liste des services
+            'niveauService' => $niveauService, // <--- MAINTENANT C'EST 'niveauService' (singulier)
         ]);
     }
 
-    #[Route('/modifier_mon_rendezvous/{id}', name: 'modifier_mon_rendezvous', methods: ['POST'])]
+    #[Route('/modifier_mon_rdv/{id}', name: 'modifier_mon_rdv', methods: ['POST'])]
     public function modifierRendezVous(int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
         $rendezvous = $entityManager->getRepository(RendezVous::class)->find($id);
@@ -60,9 +60,11 @@ final class MonRendezVousController extends AbstractController
         // Récupération des données du formulaire de modification
         $nouvelleDate = $request->request->get('nouvelle_date');
         $nouvelleHeure = $request->request->get('nouvelle_heure');
-        // On récupère les IDs des services et niveaux de service, pas leurs noms directement
         $nouveauServiceId = $request->request->get('service');
-        $nouveauNiveauServiceId = $request->request->get('typeService'); // 'typeService' fait référence à l'ID du NiveauService ici
+        
+        // --- CORRECTION ICI : Récupération du paramètre 'niveauServices' du formulaire de MODIFICATION ---
+        // Ce nom correspond au 'name="niveauServices"' dans votre <select> du formulaire de modification.
+        $nouveauNiveauServiceId = $request->request->get('niveauServices'); 
 
         $hasChanged = false; // Indicateur pour savoir si des modifications ont été apportées
 
@@ -90,9 +92,8 @@ final class MonRendezVousController extends AbstractController
                 return $this->redirectToRoute('mon_rendez_vous');
             }
 
-            // Pour l'exemple, nous allons chercher et modifier le premier RendezVousService lié à ce rendez-vous.
-            // Si un rendez-vous peut avoir plusieurs services (ce que votre entité RendezVousService suggère),
-            // la logique pourrait être plus complexe pour gérer plusieurs associations.
+            // Cherche et modifie le premier RendezVousService lié à ce rendez-vous.
+            // Si un rendez-vous peut avoir plusieurs services, la logique ici pourrait être plus complexe.
             $rendezvousServices = $rendezvous->getRendezVousServices();
             if ($rendezvousServices->count() > 0) {
                 $rdvServiceToUpdate = $rendezvousServices->first(); // Prend le premier élément de la collection
@@ -106,8 +107,8 @@ final class MonRendezVousController extends AbstractController
                     $hasChanged = true;
                 }
             } else {
-                // Si le rendez-vous n'a pas encore de RendezVousService (ce qui ne devrait pas arriver après la prise de RDV),
-                // on peut en créer un nouveau pour le lier.
+                // Si le rendez-vous n'a pas encore de RendezVousService (ce qui est rare après la prise de RDV),
+                // on en crée un nouveau.
                 $newRdvService = new RendezVousService();
                 $newRdvService->setRendezVous($rendezvous);
                 $newRdvService->setServices($nouveauServiceEntite);
@@ -140,68 +141,89 @@ final class MonRendezVousController extends AbstractController
             return $this->redirectToRoute('mon_rendez_vous');
         }
     
-        // Si vous avez des relations en cascade (cascade={"remove"}) sur RendezVousService
-        // depuis RendezVous, la suppression de RendezVous suffira.
-        // Sinon, vous pourriez avoir besoin de supprimer les RendezVousService associés d'abord.
-        $entityManager->remove($rendezvous); // Indique à Doctrine de supprimer l'entité RendezVous
-        $entityManager->flush(); // Exécute la suppression en base de données
+        // Supprime le rendez-vous (et les RendezVousService associés si vous avez configuré des cascades)
+        $entityManager->remove($rendezvous); 
+        $entityManager->flush();
     
         $this->addFlash('success', 'Votre rendez-vous a été annulé avec succès.');
     
         return $this->redirectToRoute('mon_rendez_vous');
     }
+
     #[Route('/enregistrer_avis', name: 'enregistrer_avis', methods: ['POST'])]
     public function enregistrerAvis(
         Request $request,
         EntityManagerInterface $entityManager,
-        ServicesRepository $servicesRepository
+        ServicesRepository $servicesRepository,
+        NiveauServiceRepository $niveauServiceRepository
     ): Response {
-        // L'utilisateur est déjà connecté pour accéder à cette page,
-        // donc nous pouvons directement récupérer l'objet Utilisateur.
+        // L'utilisateur connecté qui laisse l'avis
         $utilisateur = $this->getUser(); 
         
-        // 1. Récupérer le rendez-vous de l'utilisateur
-        // On cherche le dernier rendez-vous pris par cet utilisateur,
-        // car l'avis est généralement lié à une expérience récente.
-        $rendezvous = $entityManager->getRepository(RendezVous::class)
-                                    ->findOneBy(['utilisateur' => $utilisateur], ['id' => 'DESC']);
+        // POUR UN AVIS TYPE GOOGLE : Aucun RendezVous n'est recherché ou lié automatiquement à l'avis.
+        // La propriété 'rendezVous' de l'objet AvisClient restera null, car elle est nullable: true dans l'entité.
+        $rendezvous = null; // L'avis n'est pas directement lié à un rendez-vous spécifique ici
+       
+        // 1. Récupération des données du formulaire
+        $note = $request->request->get('note'); 
+        $titre = $request->request->get('titre'); // Peut être null si non rempli
+        $serviceId = $request->request->get('service'); // Peut être null si non sélectionné
+        
+        // --- C'EST ICI LE PARAMÈTRE POUR L'AVIS : 'niveau_service' ---
+        // Ce nom correspond au 'name="niveau_service"' dans votre <select> du formulaire d'avis.
+        $niveauServiceId = $request->request->get('niveau_service'); 
 
-        if (!$rendezvous) {
-            // Si aucun rendez-vous n'est trouvé pour cet utilisateur (ce qui est rare ici), on ne peut pas lier l'avis.
-            $this->addFlash('danger', 'Impossible de laisser un avis sans rendez-vous associé.');
-            // Redirige l'utilisateur vers sa page de rendez-vous
+        $commentaire = $request->request->get('commentaire'); 
+
+        // 2. Validation des champs obligatoires (note et commentaire)
+        if (!$note || !$commentaire) {
+            $this->addFlash('danger', 'Veuillez choisir une note et laisser un commentaire.');
             return $this->redirectToRoute('mon_rendez_vous');
         }
 
-        // 2. Récupération des données du formulaire d'avis via post
-       
-        $note = $request->request->get('note'); 
-        $serviceId = $request->request->get('service'); 
-        $commentaire = $request->request->get('commentaire'); 
-        
-        if (!$note || !$serviceId || !$commentaire) {
-            $this->addFlash('danger', 'Veuillez remplir la note, choisir un service et laisser un commentaire.');
-            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
-        }
-
-        // 4. Vérifier si la note est valide (entre 1 et 5)
-        // is_numeric vérifie si la valeur est un nombre
-        // $note < 1 || $note > 5 vérifie si elle est bien dans l'intervalle attendu
+        // 3. Validation de la note (entre 1 et 5)
         if (!is_numeric($note) || $note < 1 || $note > 5) {
             $this->addFlash('danger', 'La note doit être un nombre entre 1 et 5.');
-            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
+            return $this->redirectToRoute('mon_rendez_vous');
         }
 
-        // 5. Récupérer l'entité Service complète
-        // Nous utilisons le ServicesRepository injecté pour trouver le service par son ID
-        $serviceEntite = $servicesRepository->find($serviceId);
-        if (!$serviceEntite) {
-            // Si l'ID du service envoyé par le formulaire ne correspond à aucun service en base de données
-            $this->addFlash('danger', 'Le service sélectionné est invalide.');
-            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
+        // 4. Récupération de l'entité Service si un ID est fourni (optionnel)
+        $serviceEntite = null; 
+        if ($serviceId) { 
+            $serviceEntite = $servicesRepository->find($serviceId);
+            if (!$serviceEntite) { // Si un ID est fourni mais ne correspond à aucun service existant
+                $this->addFlash('danger', 'Le service sélectionné est invalide.');
+                return $this->redirectToRoute('mon_rendez_vous');
+            }
         }
-        
-        // La suite du code viendra ici
-        return $this->redirectToRoute('mon_rendez_vous'); 
+
+        // 5. Récupération de l'entité NiveauService si un ID est fourni (optionnel)
+        $niveauServiceEntite = null; 
+        if ($niveauServiceId) { 
+            $niveauServiceEntite = $niveauServiceRepository->find($niveauServiceId);
+            if (!$niveauServiceEntite) { // Si un ID est fourni mais ne correspond à aucun niveau de service existant
+                $this->addFlash('danger', 'Le niveau de service sélectionné est invalide.');
+                return $this->redirectToRoute('mon_rendez_vous');
+            }
+        }
+
+        // 6. Création et hydratation de la nouvelle instance de AvisClient
+        $avis = new AvisClient();
+        $avis->setNote((int)$note); // Converti la note en entier
+        $avis->setTitre($titre); // Assigne le titre (peut être null)
+        $avis->setCommentaire($commentaire);
+        $avis->setDate(new \DateTimeImmutable()); // Date actuelle de l'avis
+        $avis->setUtilisateur($utilisateur); // L'avis est toujours lié à l'utilisateur connecté
+        $avis->setService($serviceEntite); // Assigne le service (peut être null)
+        $avis->setNiveauService($niveauServiceEntite); // Assigne le niveau de service (peut être null)
+        $avis->setRendezVous(null); // Assigne explicitement null pour ne pas lier à un rendez-vous spécifique
+
+        // 7. Persistance de l'avis en base de données
+        $entityManager->persist($avis);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre avis a été enregistré avec succès et sera visible après validation.');
+
+        return $this->redirectToRoute('mon_rendez_vous');
     }
 }

@@ -16,18 +16,24 @@ class NiveauService
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nomNiveau = null;
+    private ?string $nomNiveau= null; // <-- PROPRIÉTÉ RENOMMÉE CORRECTEMENT
 
     /**
-     * @var Collection<int, Services>
+     * @var Collection<int, AvisClient>
      */
-    #[ORM\OneToMany(mappedBy: 'niveauService', targetEntity: Services::class)]
-    private Collection $servicesList;
+    #[ORM\OneToMany(mappedBy: 'niveauService', targetEntity: AvisClient::class)]
+    private Collection $avisClients;
+
+    /**
+     * @var Collection<int, RendezVousService>
+     */
+    #[ORM\OneToMany(targetEntity: RendezVousService::class, mappedBy: 'niveauService')]
+    private Collection $rendezVousServices;
 
     public function __construct()
     {
-        $this->servicesList = new ArrayCollection();
-        // La ligne $this->rendezVousList = new ArrayCollection(); a été supprimée
+        $this->avisClients = new ArrayCollection();
+        $this->rendezVousServices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -35,46 +41,76 @@ class NiveauService
         return $this->id;
     }
 
-    public function getNomNiveau(): ?string
+    // --- MISE À JOUR ICI ---
+    public function getNomNiveau(): ?string // <-- GETTER RENOMMÉ
     {
-        return $this->nomNiveau;
+        return $this->nomNiveau; // <-- FAIT RÉFÉRENCE À LA NOUVELLE PROPRIÉTÉ
     }
 
-    public function setNomNiveau(?string $nomNiveau): static
+    public function setNomNiveau(?string $nomNiveau): static // <-- SETTER RENOMMÉ ET PARAMÈTRE MIS À JOUR
     {
-        $this->nomNiveau = $nomNiveau;
-
+        $this->nomNiveau = $nomNiveau; // <-- MODIFIE LA NOUVELLE PROPRIÉTÉ
         return $this;
     }
+    // --- FIN DE MISE À JOUR ---
 
     /**
-     * @return Collection<int, Services>
+     * @return Collection<int, AvisClient>
      */
-    public function getServicesList(): Collection
+    public function getAvisClients(): Collection
     {
-        return $this->servicesList;
+        return $this->avisClients;
     }
 
-    public function addServicesList(Services $servicesList): static
+    public function addAvisClient(AvisClient $avisClient): static
     {
-        if (!$this->servicesList->contains($servicesList)) {
-            $this->servicesList->add($servicesList);
-            $servicesList->setNiveauService($this);
+        if (!$this->avisClients->contains($avisClient)) {
+            $this->avisClients->add($avisClient);
+            $avisClient->setNiveauService($this);
         }
 
         return $this;
     }
 
-    public function removeServicesList(Services $servicesList): static
+    public function removeAvisClient(AvisClient $avisClient): static
     {
-        if ($this->servicesList->removeElement($servicesList)) {
+        if ($this->avisClients->removeElement($avisClient)) {
             // set the owning side to null (unless already changed)
-            if ($servicesList->getNiveauService() === $this) {
-                $servicesList->setNiveauService(null);
+            if ($avisClient->getNiveauService() === $this) {
+                $avisClient->setNiveauService(null);
             }
         }
 
         return $this;
     }
 
+    /**
+     * @return Collection<int, RendezVousService>
+     */
+    public function getRendezVousServices(): Collection
+    {
+        return $this->rendezVousServices;
+    }
+
+    public function addRendezVousService(RendezVousService $rendezVousService): static
+    {
+        if (!$this->rendezVousServices->contains($rendezVousService)) {
+            $this->rendezVousServices->add($rendezVousService);
+            $rendezVousService->setNiveauService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRendezVousService(RendezVousService $rendezVousService): static
+    {
+        if ($this->rendezVousServices->removeElement($rendezVousService)) {
+            // set the owning side to null (unless already changed)
+            if ($rendezVousService->getNiveauService() === $this) {
+                $rendezVousService->setNiveauService(null);
+            }
+        }
+
+        return $this;
+    }
 }

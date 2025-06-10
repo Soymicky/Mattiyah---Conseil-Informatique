@@ -69,7 +69,7 @@
             <div class="modal-body">
                 {% if rendezvous %}
                     <p>Votre rendez-vous actuel est prévu pour le : <strong class="texterouge">{{ rendezvous.dateRDV|date('d/m/Y H:i') }}</strong></p>
-                    <form method="post" action="{{ path('modifier_mon_rendezvous', {'id': rendezvous.id}) }}">
+                    <form method="post" action="{{ path('modifier_mon_rdv', {'id': rendezvous.id}) }}">
                         <div class="mb-3 text-center">
                             <label for="nouvelle_date_rdv" class="form-label texttresgras textvert texte_majuscule fs-2">Nouvelle date :</label>
                             <input type="text" id="nouvelle_date_rdv" name="nouvelle_date" class="form-control"
@@ -112,12 +112,12 @@
 
 
                         <div class="mb-3">
-                            <label for="typeService" class="form-label fw-semibold">Nouveau type de service :</label>
-                            <select id="typeService" name="typeService" class="form-select">
+                            <label for="niveauSeervice" class="form-label fw-semibold">Nouveau type de service :</label>
+                            <select id="niveauSeervice" name="niveauServices" class="form-select">
                                 {% set currentRdvService = rendezvous.rendezVousServices.first %}
                                 {% set currentNiveauServiceId = currentRdvService ? currentRdvService.niveauService.id : null %}
-                                {% for type in typesOffre %}
-                                    <option value="{{ type.id }}" {% if type.id == currentNiveauServiceId %}selected{% endif %}>{{ type.nomNiveau }}</option>
+                                {% for niveau in niveauService %}
+                                 <option value="{{ niveau.id }}" {% if niveau.id == currentNiveauServiceId %}selected{% endif %}>{{ niveau.nomNiveau }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -182,51 +182,58 @@
     
     </div>
 </div>
-{# ... (votre code existant, juste après le div des boutons Modifier/Annuler) ... #}
 
-        <hr class="mt-5 mb-4"> {# Ligne de séparation visuelle #}
+       <div class ="marge_50">
         <h4 class="mt-5 fw-semibold">Laisser un avis sur votre expérience</h4>
+        <form method="post" action="{{ path('enregistrer_avis') }}">
+        {# Ce champ caché n'est pas strictement nécessaire car l'utilisateur est récupéré côté contrôleur, mais il est inoffensif. #}
+        <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}"> 
+        {# Le champ 'rendezvous_id' est retiré, car l'avis n'est plus lié à un rendez-vous spécifique. #}
 
-        {% if rendezvous %} {# Affiche la section d'avis UNIQUEMENT si un rendez-vous existe #}
-            <form method="post" action="{{ path('enregistrer_avis') }}"> {# **Cette route devra être créée !** #}
-                <input type="hidden" name="rendezvous_id" value="{{ rendezvous.id }}">
-                <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}">
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Note de satisfaction (1-5 étoiles) :</label>
-                    <div class="rating-stars d-flex gap-2">
-                        {% for i in 1..5 %}
-                            <input type="radio" id="star_avis_{{ i }}" name="note" value="{{ i }}" class="d-none" required>
-                            <label for="star_avis_{{ i }}" class="star-label fs-4 cursor-pointer" data-rating="{{ i }}">
-                                <i class="bi bi-star-fill"></i> {# Utilisez bi-star-fill pour un meilleur visuel #}
-                            </label>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="avis_service_choisi" class="form-label fw-semibold">Service pour lequel vous laissez un avis :</label>
-                    <select class="form-select" id="avis_service_choisi" name="service" required>
-                        <option value="">-- Sélectionnez le service --</option>
-                        {# Simplifié : liste tous les services passés au template #}
-                        {% for service in services %}
-                            <option value="{{ service.id }}">{{ service.nomService }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="avis_commentaire" class="form-label fw-semibold">Votre commentaire :</label>
-                    <textarea class="form-control" id="avis_commentaire" name="commentaire" rows="4" placeholder="Partagez votre expérience..." required></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-success fw-semibold">Envoyer mon avis</button>
-            </form>
-        {% else %}
-            <div class="alert alert-info mt-4" role="alert">
-                Vous n'avez pas de rendez-vous pour laisser un avis.
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Note de satisfaction (1-5 étoiles) :</label>
+            <div class="rating-stars d-flex gap-2">
+                {% for i in 1..5 %}
+                    <input type="radio" id="star_avis_{{ i }}" name="note" value="{{ i }}" class="d-none" required>
+                    <label for="star_avis_{{ i }}" class="star-label fs-4 cursor-pointer" data-rating="{{ i }}">
+                        <i class="bi bi-star-fill"></i>
+                    </label>
+                {% endfor %}
             </div>
-        {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="avis_titre" class="form-label fw-semibold">Titre de votre avis <strong class="texte20px fw-light">(facultatif)</strong> :</label>
+            <input type="text" class="form-control" id="avis_titre" name="titre" placeholder="Ex: Rendez-vous Audit IT" maxlength="255">
+        </div>
+
+        <div class="mb-3">
+            <label for="avis_service_choisi" class="form-label fw-semibold">Service concerné <strong class="texte20px fw-light">(facultatif)</strong> :</label>
+            <select class="form-select" id="avis_service_choisi" name="service">
+                <option value="">-- Sélectionnez un service --</option>
+                {% for service in services %}
+                    <option value="{{ service.id }}">{{ service.nomService }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+      <div class="">
+    <label for="avis_niveau_service" class="form-label fw-semibold">Niveau de service <strong class="texte20px fw-light">(facultatif)</strong> :</label>
+        <select class="form-select" id="avis_niveau_service" name="niveau_service">
+            <option value="">-- Sélectionnez le niveau de service --</option>
+            {% for niveau in niveauService %} {# Correct : utilise 'niveauService' (au singulier) #}
+                <option value="{{ niveau.id }}">{{ niveau.nomNiveau}}</option> {# Correct : utilise 'nomNiveau' #}
+            {% endfor %}
+        </select>
+        </div>
+        <div class="mb-3">
+            <label for="avis_commentaire" class="form-label fw-semibold">Votre commentaire :</label>
+            <textarea class="form-control" id="avis_commentaire" name="commentaire" rows="4" placeholder="Partagez votre expérience détaillée ici." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success fw-semibold">Envoyer mon avis</button>
+    </form>
+</div>
 
 {% endblock %}
 

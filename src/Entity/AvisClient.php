@@ -15,7 +15,7 @@ class AvisClient
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $titre = null;
+    private ?string $titre = null; // C'est déjà là et nullable: true, parfait pour le titre de l'avis!
 
     #[ORM\Column(nullable: true)]
     private ?int $note = null;
@@ -26,19 +26,23 @@ class AvisClient
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $commentaire = null;
 
-    // Modifié en ManyToOne et nullable: true
-    #[ORM\ManyToOne(inversedBy: 'avisClients')] // Assurez-vous que cette relation inverse existe dans RendezVous.php
-    #[ORM\JoinColumn(nullable: true)] // Peut être vide
+    #[ORM\ManyToOne(inversedBy: 'avisClients')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?RendezVous $rendezVous = null;
 
     #[ORM\ManyToOne(inversedBy: 'avisClients')]
-    #[ORM\JoinColumn(nullable: false)] // L'utilisateur est obligatoire
+    #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
-    // Déjà ManyToOne et nullable: true
     #[ORM\ManyToOne(inversedBy: 'avisClients')]
-    #[ORM\JoinColumn(nullable: true)] // Peut être vide
+    #[ORM\JoinColumn(nullable: true)]
     private ?Services $service = null;
+
+    // NOUVEAU : Ajout de la relation vers NiveauService
+    #[ORM\ManyToOne(inversedBy: 'avisClients')] // Assurez-vous d'ajouter avisClients à NiveauService si ce n'est pas déjà fait
+    #[ORM\JoinColumn(nullable: true)] // Rendre cette relation optionnelle
+    private ?NiveauService $niveauService = null;
+
 
     public function getId(): ?int
     {
@@ -119,6 +123,18 @@ class AvisClient
     public function setService(?Services $service): static
     {
         $this->service = $service;
+        return $this;
+    }
+
+    // NOUVEAU : Getter et Setter pour NiveauService
+    public function getNiveauService(): ?NiveauService
+    {
+        return $this->niveauService;
+    }
+
+    public function setNiveauService(?NiveauService $niveauService): static
+    {
+        $this->niveauService = $niveauService;
         return $this;
     }
 }
