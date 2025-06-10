@@ -26,8 +26,12 @@ class RendezVous
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\OneToOne(mappedBy: 'rendezVous', cascade: ['persist', 'remove'])]
-    private ?AvisClient $avisClient = null;
+    // CHANGEMENT ICI : OneToOne devient OneToMany pour les avis
+    /**
+     * @var Collection<int, AvisClient>
+     */
+    #[ORM\OneToMany(mappedBy: 'rendezVous', targetEntity: AvisClient::class, cascade: ['persist', 'remove'])]
+    private Collection $avisClients; // Renommé de avisClient à avisClients pour indiquer une collection
 
     /**
      * @var Collection<int, Services>
@@ -45,6 +49,7 @@ class RendezVous
     {
         $this->services = new ArrayCollection();
         $this->rendezVousServices = new ArrayCollection();
+        $this->avisClients = new ArrayCollection(); // NOUVELLE INITIALISATION DE LA COLLECTION
     }
 
     public function getId(): ?int
@@ -59,7 +64,7 @@ class RendezVous
 
     public function setDateRDV(?\DateTimeInterface $dateRDV): static
     {
-        $this->dateRDV = $dateRDV; // D'abord, assignez la valeur
+        $this->dateRDV = $dateRDV;
         return $this;
     }
 
@@ -85,22 +90,46 @@ class RendezVous
         return $this;
     }
 
-    public function getAvisClient(): ?AvisClient
+    // CHANGEMENT ICI : getAvisClient devient getAvisClients et retourne une Collection
+    /**
+     * @return Collection<int, AvisClient>
+     */
+    public function getAvisClients(): Collection
     {
-        return $this->avisClient;
+        return $this->avisClients;
     }
 
-    public function setAvisClient(?AvisClient $avisClient): static
+    // AJOUT DE LA MÉTHODE addAvisClient
+    public function addAvisClient(AvisClient $avisClient): static
     {
-        // set the owning side of the relation if necessary
-        if ($avisClient !== null && $avisClient->getRendezVous() !== $this) {
+        if (!$this->avisClients->contains($avisClient)) {
+            $this->avisClients->add($avisClient);
             $avisClient->setRendezVous($this);
         }
-
-        $this->avisClient = $avisClient;
-
         return $this;
     }
+
+    // AJOUT DE LA MÉTHODE removeAvisClient
+    public function removeAvisClient(AvisClient $avisClient): static
+    {
+        if ($this->avisClients->removeElement($avisClient)) {
+            // set the owning side to null (unless already changed)
+            if ($avisClient->getRendezVous() === $this) {
+                $avisClient->setRendezVous(null);
+            }
+        }
+        return $this;
+    }
+
+    // Suppression de l'ancien setAvisClient (qui gérait une relation OneToOne)
+    // public function setAvisClient(?AvisClient $avisClient): static
+    // {
+    //     if ($avisClient !== null && $avisClient->getRendezVous() !== $this) {
+    //         $avisClient->setRendezVous($this);
+    //     }
+    //     $this->avisClient = $avisClient;
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Services>
@@ -115,14 +144,12 @@ class RendezVous
         if (!$this->services->contains($service)) {
             $this->services->add($service);
         }
-
         return $this;
     }
 
     public function removeService(Services $service): static
     {
         $this->services->removeElement($service);
-
         return $this;
     }
 
@@ -140,19 +167,16 @@ class RendezVous
             $this->rendezVousServices->add($rendezVousService);
             $rendezVousService->setRendezVous($this);
         }
-
         return $this;
     }
 
     public function removeRendezVousService(RendezVousService $rendezVousService): static
     {
         if ($this->rendezVousServices->removeElement($rendezVousService)) {
-            // set the owning side to null (unless already changed)
             if ($rendezVousService->getRendezVous() === $this) {
                 $rendezVousService->setRendezVous(null);
             }
         }
-
         return $this;
     }
 }

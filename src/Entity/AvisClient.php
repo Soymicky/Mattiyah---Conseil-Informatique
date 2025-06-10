@@ -26,13 +26,19 @@ class AvisClient
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $commentaire = null;
 
-    #[ORM\OneToOne(inversedBy: 'avisClient')]
-    #[ORM\JoinColumn(nullable: false)]
+    // Modifié en ManyToOne et nullable: true
+    #[ORM\ManyToOne(inversedBy: 'avisClients')] // Assurez-vous que cette relation inverse existe dans RendezVous.php
+    #[ORM\JoinColumn(nullable: true)] // Peut être vide
     private ?RendezVous $rendezVous = null;
 
     #[ORM\ManyToOne(inversedBy: 'avisClients')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false)] // L'utilisateur est obligatoire
     private ?Utilisateur $utilisateur = null;
+
+    // Déjà ManyToOne et nullable: true
+    #[ORM\ManyToOne(inversedBy: 'avisClients')]
+    #[ORM\JoinColumn(nullable: true)] // Peut être vide
+    private ?Services $service = null;
 
     public function getId(): ?int
     {
@@ -47,7 +53,6 @@ class AvisClient
     public function setTitre(?string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -59,7 +64,6 @@ class AvisClient
     public function setNote(?int $note): static
     {
         $this->note = $note;
-
         return $this;
     }
 
@@ -71,7 +75,6 @@ class AvisClient
     public function setDate(?\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -83,7 +86,6 @@ class AvisClient
     public function setCommentaire(?string $commentaire): static
     {
         $this->commentaire = $commentaire;
-
         return $this;
     }
 
@@ -95,7 +97,6 @@ class AvisClient
     public function setRendezVous(?RendezVous $rendezVous): static
     {
         $this->rendezVous = $rendezVous;
-
         return $this;
     }
 
@@ -107,7 +108,17 @@ class AvisClient
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+        return $this;
+    }
 
+    public function getService(): ?Services
+    {
+        return $this->service;
+    }
+
+    public function setService(?Services $service): static
+    {
+        $this->service = $service;
         return $this;
     }
 }

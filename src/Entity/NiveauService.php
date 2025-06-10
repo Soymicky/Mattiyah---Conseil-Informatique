@@ -77,5 +77,4 @@ class NiveauService
         return $this;
     }
 
-    // Les méthodes getRendezVousList, addRendezVousList, removeRendezVousList ont été supprimées
 }

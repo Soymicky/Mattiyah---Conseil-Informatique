@@ -5,9 +5,11 @@ namespace App\Controller;
 
 use App\Entity\RendezVous;
 use App\Entity\Services;
-use App\Entity\NiveauService; // Ajoutez l'import pour NiveauService
-use App\Entity\RendezVousService; // Ajoutez l'import pour RendezVousService
-use App\Repository\NiveauServiceRepository; // Ajoutez l'import pour NiveauServiceRepository
+use App\Entity\NiveauService; 
+use App\Entity\RendezVousService; 
+use App\Repository\NiveauServiceRepository; 
+use App\Entity\AvisClient;
+use App\Repository\ServicesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -147,5 +149,59 @@ final class MonRendezVousController extends AbstractController
         $this->addFlash('success', 'Votre rendez-vous a été annulé avec succès.');
     
         return $this->redirectToRoute('mon_rendez_vous');
+    }
+    #[Route('/enregistrer_avis', name: 'enregistrer_avis', methods: ['POST'])]
+    public function enregistrerAvis(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ServicesRepository $servicesRepository
+    ): Response {
+        // L'utilisateur est déjà connecté pour accéder à cette page,
+        // donc nous pouvons directement récupérer l'objet Utilisateur.
+        $utilisateur = $this->getUser(); 
+        
+        // 1. Récupérer le rendez-vous de l'utilisateur
+        // On cherche le dernier rendez-vous pris par cet utilisateur,
+        // car l'avis est généralement lié à une expérience récente.
+        $rendezvous = $entityManager->getRepository(RendezVous::class)
+                                    ->findOneBy(['utilisateur' => $utilisateur], ['id' => 'DESC']);
+
+        if (!$rendezvous) {
+            // Si aucun rendez-vous n'est trouvé pour cet utilisateur (ce qui est rare ici), on ne peut pas lier l'avis.
+            $this->addFlash('danger', 'Impossible de laisser un avis sans rendez-vous associé.');
+            // Redirige l'utilisateur vers sa page de rendez-vous
+            return $this->redirectToRoute('mon_rendez_vous');
+        }
+
+        // 2. Récupération des données du formulaire d'avis via post
+       
+        $note = $request->request->get('note'); 
+        $serviceId = $request->request->get('service'); 
+        $commentaire = $request->request->get('commentaire'); 
+        
+        if (!$note || !$serviceId || !$commentaire) {
+            $this->addFlash('danger', 'Veuillez remplir la note, choisir un service et laisser un commentaire.');
+            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
+        }
+
+        // 4. Vérifier si la note est valide (entre 1 et 5)
+        // is_numeric vérifie si la valeur est un nombre
+        // $note < 1 || $note > 5 vérifie si elle est bien dans l'intervalle attendu
+        if (!is_numeric($note) || $note < 1 || $note > 5) {
+            $this->addFlash('danger', 'La note doit être un nombre entre 1 et 5.');
+            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
+        }
+
+        // 5. Récupérer l'entité Service complète
+        // Nous utilisons le ServicesRepository injecté pour trouver le service par son ID
+        $serviceEntite = $servicesRepository->find($serviceId);
+        if (!$serviceEntite) {
+            // Si l'ID du service envoyé par le formulaire ne correspond à aucun service en base de données
+            $this->addFlash('danger', 'Le service sélectionné est invalide.');
+            return $this->redirectToRoute('mon_rendez_vous'); // Redirige en cas d'erreur
+        }
+        
+        // La suite du code viendra ici
+        return $this->redirectToRoute('mon_rendez_vous'); 
     }
 }

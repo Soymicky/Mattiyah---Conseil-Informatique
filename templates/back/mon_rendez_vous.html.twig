@@ -2,17 +2,13 @@
 
 {% block title %}Mon Rendez-vous{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-{% endblock %}
+
 
 {% block body %}
-<h1>Mon rendez-vous</h1>
 <div class="container my-5">
-    <h1 class="text-center fw-bold">
-        Mon rendez-vous <span class="border-bottom border-warning d-inline-block" style="width: 60px;"></span>
-    </h1>
+    <h1 class="text-center textvert fw-bold">Mon rendez-vous</h1>
+    <hr class="lignejaucentree mb-5">
+
 
 {# prochain rdv #}
     <h4 class="mt-5 fw-semibold">Prochain rendez-vous</h4>
@@ -171,10 +167,6 @@
                                 <option value="autre">Autre</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="commentaire" class="form-label fw-semibold">Commentaire (facultatif) :</label>
-                            <textarea class="form-control" id="commentaire" name="commentaire" rows="3"></textarea>
-                        </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non, annuler</button>
                 {% if rendezvous %}
@@ -183,13 +175,62 @@
             </div>
         </div>
     </div>
+    <div>
+        <section class="margin_50">
+           
+        </section>
+    
+    </div>
 </div>
+{# ... (votre code existant, juste après le div des boutons Modifier/Annuler) ... #}
+
+        <hr class="mt-5 mb-4"> {# Ligne de séparation visuelle #}
+        <h4 class="mt-5 fw-semibold">Laisser un avis sur votre expérience</h4>
+
+        {% if rendezvous %} {# Affiche la section d'avis UNIQUEMENT si un rendez-vous existe #}
+            <form method="post" action="{{ path('enregistrer_avis') }}"> {# **Cette route devra être créée !** #}
+                <input type="hidden" name="rendezvous_id" value="{{ rendezvous.id }}">
+                <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Note de satisfaction (1-5 étoiles) :</label>
+                    <div class="rating-stars d-flex gap-2">
+                        {% for i in 1..5 %}
+                            <input type="radio" id="star_avis_{{ i }}" name="note" value="{{ i }}" class="d-none" required>
+                            <label for="star_avis_{{ i }}" class="star-label fs-4 cursor-pointer" data-rating="{{ i }}">
+                                <i class="bi bi-star-fill"></i> {# Utilisez bi-star-fill pour un meilleur visuel #}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="avis_service_choisi" class="form-label fw-semibold">Service pour lequel vous laissez un avis :</label>
+                    <select class="form-select" id="avis_service_choisi" name="service" required>
+                        <option value="">-- Sélectionnez le service --</option>
+                        {# Simplifié : liste tous les services passés au template #}
+                        {% for service in services %}
+                            <option value="{{ service.id }}">{{ service.nomService }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="avis_commentaire" class="form-label fw-semibold">Votre commentaire :</label>
+                    <textarea class="form-control" id="avis_commentaire" name="commentaire" rows="4" placeholder="Partagez votre expérience..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success fw-semibold">Envoyer mon avis</button>
+            </form>
+        {% else %}
+            <div class="alert alert-info mt-4" role="alert">
+                Vous n'avez pas de rendez-vous pour laisser un avis.
+            </div>
+        {% endif %}
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
-    <script src="{{ asset('js/mon-rdv.js') }}"></script> {# Votre fichier JavaScript dédié #}
+    <script src="{{ asset('js/mon-rdv.js') }}"></script>  
 {% endblock %}

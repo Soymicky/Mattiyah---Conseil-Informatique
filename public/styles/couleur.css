@@ -223,6 +223,15 @@ a.noline {
     margin: 0 500px 0 350px;
 }
 
+.lignejaucentree {
+    height: 5px;
+    background-color: #FCA41F;
+    opacity: 1;
+    margin: 0 400px 0 400px;
+    
+    border: none;
+}
+
 .endplacement {
     margin-left: 700px;
 }

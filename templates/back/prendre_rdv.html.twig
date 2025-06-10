@@ -92,6 +92,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ parent() }} {# Cette ligne est très importante, elle inclut les scripts de base.html.twig (dont Flatpickr) #}
+    {{ parent() }} 
     <script src="{{ asset('js/prendre-rdv.js') }}"></script>
 {% endblock %}
