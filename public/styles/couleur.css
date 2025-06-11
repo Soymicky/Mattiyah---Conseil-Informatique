@@ -302,3 +302,11 @@ a.noline {
 .form-check:hover .form-check-label {
     font-weight: bold;
 }
+
+/* HOVER BOUTON */
+
+.fondvert:hover {
+    background-color: #218838 !important; /* Un vert légèrement plus foncé au survol */
+    color: #fff !important;            /* Garde le texte blanc */
+    border-color: #1e7e34 !important;  /* Ajuste la bordure au survol */
+}

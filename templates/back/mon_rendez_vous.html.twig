@@ -2,15 +2,13 @@
 
 {% block title %}Mon Rendez-vous{% endblock %}
 
-
-
 {% block body %}
 <div class="container my-5">
     <h1 class="text-center textvert fw-bold">Mon rendez-vous</h1>
     <hr class="lignejaucentree mb-5">
 
 
-{# prochain rdv #}
+{# Prochain rendez-vous #}
     <h4 class="mt-5 fw-semibold">Prochain rendez-vous</h4>
 
     <div class="row align-items-start mt-4">
@@ -22,11 +20,11 @@
                         <p class="mb-1"><strong>De :</strong> {{ app.user.nom }} {{ app.user.prenom }}</p>
                         <p class="mb-1 text-danger"><strong>Date et heure :</strong> {{ rendezvous.dateRDV|date('d/m/Y H:i') }}</p>
 
-                        {% set rdvService = rendezvous.rendezVousServices.first %}
+                        {% set rdvServiceAssocie = rendezvous.rendezVousServices.first %}
 
-                        {% if rdvService %}
-                            <p class="mb-1"><strong>Service choisi :</strong> {{ rdvService.services.nomService }}</p>
-                            <p class="mb-1"><strong>Type de service :</strong> {{ rdvService.niveauService.nomNiveau }}</p>
+                        {% if rdvServiceAssocie %}
+                            <p class="mb-1"><strong>Service choisi :</strong> {{ rdvServiceAssocie.services.nomService }}</p>
+                            <p class="mb-1"><strong>Niveau de service :</strong> {{ rdvServiceAssocie.niveauService.nomNiveau }}</p>
                         {% else %}
                             <p class="mb-1">Aucun service associé à ce rendez-vous.</p>
                         {% endif %}
@@ -39,7 +37,7 @@
                 </div>
             </div>
 
-{# modification son rdv - annuler ou modifier #}
+{# Boutons d'action (modifier/annuler) #}
             <div class="d-flex gap-3">
                 {% if rendezvous %}
                     <button class="btn btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#editModal">
@@ -58,7 +56,7 @@
     </div>
 </div>
 
-
+            {# MODALE DE MODIFICATION DE RENDEZ-VOUS #}
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content padding20">
@@ -73,72 +71,70 @@
                         <div class="mb-3 text-center">
                             <label for="nouvelle_date_rdv" class="form-label texttresgras textvert texte_majuscule fs-2">Nouvelle date :</label>
                             <input type="text" id="nouvelle_date_rdv" name="nouvelle_date" class="form-control"
-                                   value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('Y-m-d') }}" required>
+                                   value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('Y-m-d') }}">
                         </div>
                         <div class="mb-3">
-                    <!--  l'heure actuelle -->
-                    <label class="form-label fw-semibold">Heure actuelle :</label>
-                    <input type="text" class="form-control" 
-                            value="{{ rendezvous.dateRDV ? rendezvous.dateRDV|date('H:i') }}" 
-                            >
-
-                        <!-- Choix de la nouvelle heure -->
-                        <label for="heure_rdv" class="form-label fw-semibold mt-3">Nouvelle heure :</label>
-                        <select class="form-select" id="heure_rdv" name="heure" required>
-                            <option value="">Sélectionnez une nouvelle heure</option>
-                            <option value="09:00">09:00 heures</option>
-                            <option value="10:10">10:10 heures</option>
-                            <option value="11:10">11:10 heures</option>
-                            <option value="12:10">12:10 heures</option>
-                            <option value="14:10">14:10 heures</option>
-                            <option value="15:10">15:10 heures</option>
-                            <option value="16:10">16:10 heures</option>
-                            <option value="17:10">17:10 heures</option>
-                        </select>
-                        </div>
-
-                    </div>
-
-                   <div class="mb-3">
-                    <label for="service" class="form-label fw-semibold">Modifier service :</label>
-                    <select id="service" name="service" class="form-select">
-                        {% set currentRdvService = rendezvous.rendezVousServices|first %}
-                        {% set currentServiceId = currentRdvService ? currentRdvService.services.id : null %}
-                        {% for service in services %}
-                            <option value="{{ service.id }}" {% if service.id == currentServiceId %}selected{% endif %}>{{ service.nomService }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-
-                        <div class="mb-3">
-                            <label for="niveauSeervice" class="form-label fw-semibold">Nouveau type de service :</label>
-                            <select id="niveauSeervice" name="niveauServices" class="form-select">
-                                {% set currentRdvService = rendezvous.rendezVousServices.first %}
-                                {% set currentNiveauServiceId = currentRdvService ? currentRdvService.niveauService.id : null %}
-                                {% for niveau in niveauService %}
-                                 <option value="{{ niveau.id }}" {% if niveau.id == currentNiveauServiceId %}selected{% endif %}>{{ niveau.nomNiveau }}</option>
+                            <label for="nouvelle_heure_rdv" class="form-label fw-semibold mt-3">Nouvelle heure :</label>
+                            <select class="form-select" id="nouvelle_heure_rdv" name="heure" required>
+                                <option value="">Sélectionnez une heure</option>
+                                {% set heuresDisponibles = ['09:00', '10:10', '11:10', '12:10', '14:10', '15:10', '16:10', '17:10'] %}
+                                {% set heureActuelle = rendezvous.dateRDV ? rendezvous.dateRDV|date('H:i') : '' %}
+                                {% for heure in heuresDisponibles %}
+                                    <option value="{{ heure }}" {% if heure == heureActuelle %}selected{% endif %}>{{ heure }}H</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="justification" class="form-label fw-semibold">Motif du déplacement (facultatif) :</label>
-                            <select class="form-select" id="justification" name="justification">
-                                <option value="">-- Choisissez un motif --</option>
-                                <option value="erreur_date">Erreur de date</option>
-                                <option value="changement_emploi_du_temps">Changement d'emploi du temps</option>
-                                <option value="autre">Autre</option>
-                            </select>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Modifier service :</label>
+                        <div id="services_selection">
+                            {# CHANGEMENT ICI : name="service[]" (singulier sans 's' à la fin du nom de paramètre) #}
+                            {% set servicesActuelsRdv = rendezvous.rendezVousServices|map(rs => rs.services.id)|keys %}
+                            {% for service in services %}
+                                <div class="form-check2">
+                                    <input class="form-check2-input" type="checkbox" name="service[]" value="{{ service.id }}" id="service_modifier_{{ service.id }}"
+                                           {% if service.id in servicesActuelsRdv %}checked{% endif %}>
+                                    <label class="form-check-label" for="service_modifier_{{ service.id }}">
+                                        {{ service.nomService }}
+                                    </label>
+                                </div>
+                            {% endfor %}
                         </div>
-                        <div class="mb-3">
-                            <label for="commentaire" class="form-label fw-semibold">Commentaire (facultatif) :</label>
-                            <textarea class="form-control" id="commentaire" name="commentaire" rows="3"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-warning text-dark fw-semibold">Mettre à jour le rendez-vous</button>
-                        </div>
-                    </form>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="niveauService_modifier" class="form-label fw-semibold">Nouveau niveau de service :</label>
+                        
+                    <div class="mb-3">
+                        <label for="niveauService_modifier" class="form-label fw-semibold">Nouveau niveau de service :</label>
+                        <select id="niveauService_modifier" name="niveauService" class="form-select">
+                            <option value="">Sélectionnez un niveau de service</option>
+                            {# AJOUTEZ OU VÉRIFIEZ QUE CETTE LIGNE EST PRÉSENTE ET CORRECTE #}
+                            {% set niveauServiceActuelId = rendezvous.rendezVousServices.first ? rendezvous.rendezVousServices.first.niveauService.id : null %}
+                            {# FIN DE LA LIGNE À VÉRIFIER/AJOUTER #}
+                            {% for niveau in niveauService %}
+                                <option value="{{ niveau.id }}" {% if niveau.id == niveauServiceActuelId %}selected{% endif %}>{{ niveau.nomNiveau }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="justification" class="form-label fw-semibold">Motif du déplacement (facultatif) :</label>
+                        <select class="form-select" id="justification" name="justification">
+                            <option value="">-- Choisissez un motif --</option>
+                            <option value="erreur_date">Erreur de date</option>
+                            <option value="changement_emploi_du_temps">Changement d'emploi du temps</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="commentaire" class="form-label fw-semibold">Commentaire (facultatif) :</label>
+                        <textarea class="form-control" id="commentaire" name="commentaire" rows="3"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-warning text-dark fw-semibold">Mettre à jour le rendez-vous</button>
+                    </div>
+                </form>
                 {% else %}
                     <p>Aucun rendez-vous à modifier.</p>
                 {% endif %}
@@ -147,6 +143,7 @@
     </div>
 </div>
 
+            {# MODALE D'ANNULATION DE RENDEZ-VOUS #}
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content padding20">
@@ -157,50 +154,45 @@
             <div class="modal-body">
                 <p class="fs-5 fw-bold texterouge text-center">Vous êtes sur le point annuler votre rendez-vous</p>
                 <p class="fs-6">Afin de mieux comprendre votre décision, pourriez-vous s'il vous plaît indiquer les raisons de l'annulation ??</p>
+                <div class="mb-3">
+                    <label for="justification_cancel" class="form-label fw-semibold">Motif de l'annulation (facultatif) :</label>
+                    <select class="form-select" id="justification_cancel" name="justification_cancel">
+                        <option value="">-- Choisissez un motif --</option>
+                        <option value="erreur_date">Erreur de date</option>
+                        <option value="changement_emploi_du_temps">Changement d'emploi du temps</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                 <div class="py-3"> {# Utilisez mb-3 (margin-bottom) plutôt que py-3 (padding-y) pour la cohérence Bootstrap si vous voulez de l'espace entre les éléments #}
+                        <label for="commentaire_modifier_rendezvous" class="form-label fw-semibold">Commentaire (facultatif) :</label>
+                        <textarea class="form-control" id="commentaire_modifier_rendezvous" name="commentaire_rendezvous" rows="3" placeholder="Écrivez votre commentaire ici..."></textarea>
+                    </div>
                 </div>
-             <div class="mb-3">
-                            <label for="justification" class="form-label fw-semibold">Motif du déplacement (facultatif) :</label>
-                            <select class="form-select" id="justification" name="justification">
-                                <option value="">-- Choisissez un motif --</option>
-                                <option value="erreur_date">Erreur de date</option>
-                                <option value="changement_emploi_du_temps">Changement d'emploi du temps</option>
-                                <option value="autre">Autre</option>
-                            </select>
-                        </div>
+            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non, annuler</button>
+                <button type="button" class="btn fondvert fondvert:hover text-white" data-bs-dismiss="modal">Non, annuler</button>
                 {% if rendezvous %}
                     <a href="{{ path('annulerRDV', {'id': rendezvous.id}) }}" class="btn fondrouge text-white fw-semibold">Oui, annuler mon rendez-vous</a>
                 {% endif %}
             </div>
         </div>
     </div>
-    <div>
-        <section class="margin_50">
-           
-        </section>
-    
-    </div>
 </div>
 
        <div class ="marge_50">
         <h4 class="mt-5 fw-semibold">Laisser un avis sur votre expérience</h4>
         <form method="post" action="{{ path('enregistrer_avis') }}">
-        {# Ce champ caché n'est pas strictement nécessaire car l'utilisateur est récupéré côté contrôleur, mais il est inoffensif. #}
-        <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}"> 
-        {# Le champ 'rendezvous_id' est retiré, car l'avis n'est plus lié à un rendez-vous spécifique. #}
+        <input type="hidden" name="utilisateur_id" value="{{ app.user.id }}">
 
       <div class="mb-3">
     <label class="form-label fw-semibold mb-2">Note de satisfaction (1-5) :</label>
 
-    {# Utilise des classes Bootstrap pour un affichage en ligne et un espacement propres #}
     <div class="d-flex flex-wrap gap-3">
         {% for i in 1..5 %}
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="note" id="note_avis_{{ i }}"  value="{{ i }}" {# La valeur envoyée à Symfony sera le numéro (1, 2, 3, etc.) #}
-                    required> {# Oblige l'utilisateur à choisir une note #}
+                <input class="form-check-input" type="radio" name="note" id="note_avis_{{ i }}"  value="{{ i }}"
+                    required>
                 <label class="form-check-label" for="note_avis_{{ i }}">
-                    {{ i }} {# Affiche le numéro à côté du bouton radio #}
+                    {{ i }}
                 </label>
             </div>
         {% endfor %}
@@ -214,7 +206,7 @@
 
         <div class="mb-3">
             <label for="avis_service_choisi" class="form-label fw-semibold">Service concerné <strong class="texte20px fw-light">(facultatif)</strong> :</label>
-            <select class="form-select" id="avis_service_choisi" name="service">
+            <select class="form-select" id="avis_service_choisi" name="service"> {# Déjà 'service' au singulier #}
                 <option value="">-- Sélectionnez un service --</option>
                 {% for service in services %}
                     <option value="{{ service.id }}">{{ service.nomService }}</option>
@@ -224,10 +216,10 @@
 
       <div class="">
     <label for="avis_niveau_service" class="form-label fw-semibold">Niveau de service <strong class="texte20px fw-light">(facultatif)</strong> :</label>
-        <select class="form-select" id="avis_niveau_service" name="niveau_service">
+        <select class="form-select" id="avis_niveau_service" name="niveau_service"> {# Déjà 'niveau_service' #}
             <option value="">-- Sélectionnez le niveau de service --</option>
-            {% for niveau in niveauService %} {# Correct : utilise 'niveauService' (au singulier) #}
-                <option value="{{ niveau.id }}">{{ niveau.nomNiveau}}</option> {# Correct : utilise 'nomNiveau' #}
+            {% for niveau in niveauService %}
+                <option value="{{ niveau.id }}">{{ niveau.nomNiveau}}</option>
             {% endfor %}
         </select>
         </div>
@@ -244,5 +236,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/mon-rdv.js') }}"></script>  
+    <script src="{{ asset('js/mon-rdv.js') }}"></script>
 {% endblock %}
