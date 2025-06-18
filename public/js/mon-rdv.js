@@ -11,38 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             flatpickr(dateInput, {
                 locale: 'fr',
-                dateFormat: "d M Y", // Format d'affichage et d'envoi (ex: 11/06/2025)
+                dateFormat: "Y-m-d", 
                 defaultDate: dateDefaut,
                 minDate: "today",
                 disableMobile: "true" // Empêche le clavier natif sur mobile, utilise Flatpickr
             });
 
-            // --- Initialisation de Flatpickr pour l'HEURE ---
-            const heureInput = document.getElementById('nouvelle_heure_rdv');
-            // La valeur par défaut est déjà dans l'attribut 'value' du champ Twig
-            const heureDefaut = heureInput ? heureInput.value : '';
-
-            flatpickr(heureInput, {
-                locale: 'fr',
-                enableTime: true,   // Active le sélecteur d'heure
-                noCalendar: true,   // Cache le calendrier, n'affiche que le sélecteur d'heure
-                dateFormat: "H:i",  // Format de l'heure (ex: 14:30)
-                time_24hr: true,    // Format 24 heures
-                minuteIncrement: 10, // Incrément des minutes par 10
-                defaultDate: heureDefaut, // Pré-remplit l'heure actuelle
-                // Limite les heures sélectionnables aux options spécifiques
-                enable: [
-                   { from: "09:00", to: "09:00" },
-                   { from: "10:10", to: "10:10" },
-                   { from: "11:10", to: "11:10" },
-                   { from: "12:10", to: "12:10" },
-                   { from: "14:10", to: "14:10" },
-                   { from: "15:10", to: "15:10" },
-                   { from: "16:10", to: "16:10" },
-                   { from: "17:10", to: "17:10" },
-                ],
-                disableMobile: "true"
-            });
+            // --- DEBUT DE LA MODIFICATION : L'initialisation de Flatpickr pour l'HEURE est supprimée ---
+            // Le champ d'heure est un <select> HTML normal, pas un <input> qui nécessite Flatpickr.
+            // Tenter d'appliquer Flatpickr à un <select> causait une erreur JavaScript qui bloquait l'affichage.
+            // Le <select> d'heure est géré nativement par le navigateur et Twig.
+            // --- FIN DE LA MODIFICATION ---
 
 
             // --- Gestion de la validation du formulaire de modification ---
@@ -56,7 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // --- NOUVELLE LOGIQUE DE VALIDATION ---
             function verifierValiditeModificationFormulaire() {
                 const estDateSelectionnee = dateInput.value !== '';
-                const estHeureSelectionnee = heureInput.value !== '';
+                // L'heure est vérifiée via le select, ce qui est correct.
+                const heureInput = document.getElementById('nouvelle_heure_rdv'); // Ré-obtenir la référence si nécessaire, bien que déjà disponible
+                const estHeureSelectionnee = heureInput.value !== ''; 
 
                 let auMoinsUnServiceCoche = false;
                 checkboxesServices.forEach(checkbox => {
@@ -79,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // --- Écouteurs d'événements pour déclencher la validation ---
             dateInput.addEventListener('change', verifierValiditeModificationFormulaire);
-            heureInput.addEventListener('change', verifierValiditeModificationFormulaire);
+            const heureInput = document.getElementById('nouvelle_heure_rdv'); // S'assurer que heureInput est défini ici aussi
+            heureInput.addEventListener('change', verifierValiditeModificationFormulaire); 
 
             checkboxesServices.forEach(checkbox => {
                 checkbox.addEventListener('change', verifierValiditeModificationFormulaire);
