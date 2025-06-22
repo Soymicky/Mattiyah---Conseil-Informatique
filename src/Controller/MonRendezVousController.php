@@ -79,7 +79,7 @@ final class MonRendezVousController extends AbstractController
             }
 
             // MODIFICATION ICI : 'd F Y' pour correspondre au format de Flatpickr (Jour MoisComplet Année Heure:Minute)
-            // setlocale(LC_TIME, 'fr_FR.UTF-8', 'fra'); 
+        
             $dateRDV = \DateTime::createFromFormat('Y-m-d H:i', "$nouvelleDate $nouvelleHeure");
             
             
@@ -167,8 +167,12 @@ final class MonRendezVousController extends AbstractController
         return $this->redirectToRoute('mon_rendez_vous');
     }
 
-    #[Route('/annulerRDV/{id}', name: 'annulerRDV')]
-    public function annulerRendezVous(int $id, EntityManagerInterface $entityManager): Response
+    #[Route('/annulerRDV/{id}', name: 'annulerRDV', methods: ['POST'])] // Ajout de methods: ['POST']
+    public function annulerRendezVous(
+        int $id,
+        Request $request, // Injection de l'objet Request
+        EntityManagerInterface $entityManager
+    ): Response
     {
         $rendezvous = $entityManager->getRepository(RendezVous::class)->find($id);
     
@@ -176,7 +180,41 @@ final class MonRendezVousController extends AbstractController
             $this->addFlash('danger', 'Rendez-vous non trouvé ou non autorisé.');
             return $this->redirectToRoute('mon_rendez_vous');
         }
-    
+
+        // Récupérer la justification et le commentaire du formulaire
+        $justification = $request->request->get('justification_cancel');
+        $commentaire = $request->request->get('commentaire_annul_rdv');
+
+        // --- C'est ici que vous décidez quoi faire avec la justification et le commentaire ---
+        // Option 1: Ajouter ces informations à votre entité RendezVous avant de la supprimer.
+        //           Cela nécessiterait que vous ayez des propriétés comme 'justificationAnnulation'
+        //           et 'commentaireAnnulation' dans votre entité RendezVous.
+        // Exemple (si vous avez les propriétés dans RendezVous):
+        // $rendezvous->setJustificationAnnulation($justification);
+        // $rendezvous->setCommentaireAnnulation($commentaire);
+        // $entityManager->persist($rendezvous); // Peut être nécessaire si vous modifiez l'entité avant de la supprimer
+
+        // Option 2 (recommandée pour un historique propre): Créer une entité d'historique des annulations.
+        //          Cela permet de garder une trace complète de toutes les annulations,
+        //          même après la suppression du rendez-vous original.
+        //
+        // Pour cela, vous auriez besoin d'une entité comme 'AnnulationHistorique' (à créer):
+        // class AnnulationHistorique {
+        //     // ... propriétés (id, rendezVousId, utilisateurId, justification, commentaire, dateAnnulation)
+        // }
+        //
+        // Et vous l'utiliseriez comme ceci (exemple, après avoir créé l'entité et son repository):
+        // use App\Entity\AnnulationHistorique; // N'oubliez pas d'ajouter cette ligne au début du fichier
+        // $historiqueAnnulation = new AnnulationHistorique();
+        // $historiqueAnnulation->setRendezVousId($rendezvous->getId()); // Ou $rendezvous si vous avez une relation ManyToOne
+        // $historiqueAnnulation->setUtilisateur($this->getUser());
+        // $historiqueAnnulation->setJustification($justification);
+        // $historiqueAnnulation->setCommentaire($commentaire);
+        // $historiqueAnnulation->setDateAnnulation(new \DateTimeImmutable());
+        // $entityManager->persist($historiqueAnnulation);
+        // $entityManager->flush(); // Flush ici si vous voulez que l'historique soit enregistré avant la suppression du rdv
+
+        // Ensuite, supprimez le rendez-vous.
         $entityManager->remove($rendezvous); 
         $entityManager->flush();
     

@@ -310,3 +310,7 @@ a.noline {
     color: #fff !important;            /* Garde le texte blanc */
     border-color: #1e7e34 !important;  /* Ajuste la bordure au survol */
 }
+
+
+/*  Rendre visible la modal d'annulation */
+
