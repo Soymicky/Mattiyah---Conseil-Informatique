@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Rendez-vous{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="text-center textvert fw-bold">Espace Administrateur</h1>
+    <hr class="lignejaucentree mb-5">
+
+    <h4 class="mt-5 fw-semibold mb-5">Tous les rendez-vous à venir sont présent ici</h4>
+
+    {% if rendezvous|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        {# <th>ID Rendez-vous</th> #}
+                        <th>Date et Heure</th>
+                        <th>Utilisateur</th>
+                        <th>Service(s)</th>
+                        <th>Niveau de service</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rdv in rendezvous %}
+                        <tr>
+                            {# <td>{{ rdv.id }}</td> #}
+                            <td>{{ rdv.dateRDV|date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if rdv.utilisateur %}
+                                   Nom: {{ rdv.utilisateur.nom }}  <br>
+                                    Prénom: {{ rdv.utilisateur.prenom }} <br>
+                                    Email: ({{ rdv.utilisateur.email }})
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if rdv.rendezVousServices is not empty %}
+                                    {% for rdvService in rdv.rendezVousServices %}
+                                        {# Option 1: Services sur des lignes séparées pour un meilleur espacement vertical #}
+                                        <div>{{ rdvService.services.nomService }}</div> 
+                                        {# Option 2 (si vous préférez sur une seule ligne mais avec plus d'espace autour de la virgule):
+                                        {{ rdvService.services.nomService }}{% if not loop.last %}, &nbsp;{% endif %} #}
+                                    {% endfor %}
+                                {% else %}
+                                    Aucun
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if rdv.rendezVousServices.first and rdv.rendezVousServices.first.niveauService %}
+                                    {{ rdv.rendezVousServices.first.niveauService.nomNiveau }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {# Utilisation de d-grid et gap-2 pour espacer verticalement les boutons #}
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-sm btn-info disabled">Modifier</button>
+                                    <button class="btn btn-sm btn-danger disabled">Supprimer</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="alert alert-info">Aucun rendez-vous trouvé dans la base de données.</p>
+    {% endif %}
+</div>
+{% endblock %}

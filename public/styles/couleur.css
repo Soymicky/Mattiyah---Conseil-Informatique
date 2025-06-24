@@ -32,6 +32,12 @@
     background-color: #D7212A;
 }
 
+.fondrougelclaire {
+    background-color: #fedba5;
+    opacity: 50;
+}
+
+
 .texterouge {
     color: #D7212A;
 }
@@ -241,7 +247,7 @@ a.noline {
 }
 
 
-/*  PARTIE CONTACT POSITION FIXE */
+/* PARTIE CONTACT POSITION FIXE */
 .contact-float {
     position: fixed;
     top: 50%; 
@@ -277,40 +283,40 @@ a.noline {
   }
 
 
-  /*  AVIS CLIENT ETOILE */
- 
-.form-check-input:checked {
+/* AVIS CLIENT ETOILE */
+/* Styles pour les input radio qui sont cochés */
+.form-check-note-etoile .form-check-input:checked {
     background-color: yellow; 
     border-color: #FFD700; 
 }
 
-
+/* Styles pour le label associé à un input radio coché */
 .form-check-input:checked + .form-check-label {
     font-weight: bold;
 }
-.form-check {
-    transition: transform 0.2s ease-in-out; /* Pour une animation douce */
-    cursor: pointer; /* Pour indiquer que c'est interactif */
+
+
+.form-check-note-etoile { 
+    transition: transform 0.2s ease-in-out; 
+    cursor: pointer; 
 }
 
-/* Quand on survole ce conteneur */
-.form-check:hover {
-    transform: scale(1.2); /* Grossit l'ensemble (bouton + chiffre) de 20% */
+
+.form-check-note-etoile:hover {
+    transform: scale(1.2);
 }
 
-/* Optionnel : Rendre le chiffre gras au survol (même si pas coché) */
-.form-check:hover .form-check-label {
+
+.form-check-note-etoile:hover .form-check-label {
     font-weight: bold;
 }
+
 
 /* HOVER BOUTON */
 
 .fondvert:hover {
-    background-color: #218838 !important; /* Un vert légèrement plus foncé au survol */
-    color: #fff !important;            /* Garde le texte blanc */
-    border-color: #1e7e34 !important;  /* Ajuste la bordure au survol */
+    background-color: #218838 !important; 
+    color: #fff !important;           
+    border-color: #1e7e34 !important; 
 }
-
-
-/*  Rendre visible la modal d'annulation */
 

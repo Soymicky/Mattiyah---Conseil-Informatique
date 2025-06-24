@@ -4,12 +4,12 @@
 
 {% block body %}
     <div class="container py-5">
-        <h1>Prendre rendez-vous</h1>
+        <h1 class="textvert">Prendre rendez-vous</h1>
          
         {% if dejaRDV %}
-            <div class="alert alert-info" role="alert">
-                <p> Vous avez déjà un rendez-vous. Vous pouvez le modifier ou l'annuler depuis 
-                <a href="{{ path('mon_rendez_vous') }}">votre espace de gestion</a></p>.
+            <div class="alert alert-info fondrougelclaire" role="alert">
+              <p><span class="fw-bolder fs-5">Super !</span> Votre rendez-vous a bien été enregistré. Vous pouvez le consulter en cliquant ici :
+                <a href="{{ path('mon_rendez_vous') }}" class="textewhite">votre espace de gestion</a></p>
             </div>
         {% else %}
                

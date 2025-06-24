@@ -54,10 +54,15 @@
                 <button class="btn btn-warning text-dark fw-semibold" data-bs-toggle="modal" data-bs-target="#editModal">
                     Modifier mon rendez-vous
                 </button>
+                
 
                 {# C'EST LE BOUTON QUI VA AFFICHER LE FORMULAIRE D'ANNULATION EN LIGNE (PAS UNE MODALE) #}
                 {% if rendezvous %}
                     <button type="button" class="btn btn-light text-danger fw-semibold border border-danger" id="btnAfficherFormAnnulation">
+                        Annuler mon rendez-vous
+                    </button>
+                {% else %}
+                          <button type="button" class="btn btn-light text-danger fw-semibold border border-danger">
                         Annuler mon rendez-vous
                     </button>
                 {% endif %}
@@ -112,7 +117,7 @@
 
     <div class="d-flex flex-wrap gap-3">
         {% for i in 1..5 %}
-            <div class="form-check">
+            <div class="form-check-note-etoile">
                 <input class="form-check-input" type="radio" name="note" id="note_avis_{{ i }}"  value="{{ i }}"
                     required>
                 <label class="form-check-label" for="note_avis_{{ i }}">
@@ -158,7 +163,7 @@
 
 </div>
 
-{# LA MODALE DE MODIFICATION RESTE INTACTE (Celle-ci est la seule modale Bootstrap) #}
+   {# MODAL EDIT #}
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content padding20">
