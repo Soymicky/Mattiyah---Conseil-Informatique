@@ -15,18 +15,14 @@
                
             {% if app.user %}
                 <form method="post" action="{{ path('enregistrer_rdv') }}" id="rdvForm">
-                    {# NOUVEAU CHAMP pour la Date - Flatpickr s'y attachera #}
+                    {# NOUVEAU CHAMP pour la Date - Flatpickr #}
                     <div class="mb-3">
                         <label for="date_rdv" class="form-label text-success fw-bolder fs-2">Date du rendez-vous :</label>
                         <input type="text" class="form-control" id="date_rdv" name="date" placeholder="Cliquez pour sélectionner une date" required>
                     </div>
 
 
-                    {# NOUVEAU CHAMP pour l'Heure - Flatpickr s'y attachera #}
-                    {# <div class="mb-3">
-                        <label for="heure_rdv" class="form-label text-success fw-bolder fs-2">Heure du rendez-vous :</label>
-                        <input type="text" class="form-control" id="heure_rdv" name="heure" placeholder="Cliquez pour sélectionner une heure" required>
-                    </div> #}
+                    {# CHAMP pour l'Heure - Flatpickr #}
                       <div class="mb-3">
                         <label for="heure_rdv" class="form-label text-success fw-bolder fs-2">Heure du rendez-vous :</label>
                         <select class="form-select" id="heure_rdv" name="heure" required>
@@ -70,7 +66,7 @@
                         </select>
                     </div>
 
-                    <button type="submit" id="validerBtn" class="btn btn-primary">Valider le rendez-vous</button>
+                    <button type="submit" id="validerBtn" class="btn btn-success">Valider le rendez-vous</button>
                 </form>
 
                 <div class="mt-5 text-center ">

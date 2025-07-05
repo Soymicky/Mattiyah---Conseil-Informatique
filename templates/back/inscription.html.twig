@@ -1,37 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('/public/js/indicatifs_pays.js') }}"></script>
-{% endblock %}
-
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h1 class="mb-4">Inscription</h1>
+    <div class="container my-5"> {# Le container ne porte plus la bordure #}
+        <h1 class="mb-4 text-center">Inscription</h1>
 
-        {{ form_start(inscriptionForm) }}
-    {{ form_row(inscriptionForm.nom) }}
-    {{ form_row(inscriptionForm.prenom) }}
-    {{ form_row(inscriptionForm.email) }}
-    <div class="form-group">
-     <div class="d-flex">
-                    <button type="button" class="btn btn-outline-secondary indicatif-trigger mr-2-" id="indicatif-toggle">
-                        Pays
-                    </button>
-                        {{ form_row(inscriptionForm.telephone) }}
-                        
-                    
-    </div>
-     <div id="indicatifs-liste" style="display: none; position: absolute; z-index: 1000; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; width: auto;">
-    </div>
-    {{ form_row(inscriptionForm.plainPassword) }}
+        <div class="row justify-content-center">
+            {# Le div qui contient le formulaire reçoit maintenant la bordure et le padding #}
+            <div class="col-md-5 col-lg-4 border border-success rounded shadow-sm p-4">
+                {{ form_start(inscriptionForm) }}
 
-    <!-- Bouton d'envoi du formulaire -->
-    <button type="submit" class="btn btn-primary">Envoyer</button>
-{{ form_end(inscriptionForm) }}
+                    {{ form_row(inscriptionForm.nom, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
+                    {{ form_row(inscriptionForm.prenom, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
+                    {{ form_row(inscriptionForm.email, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
 
+                    <div class="mb-3">
+                        <label class="form-label d-block">Téléphone</label>
+                        <div class="input-group">
 
+                            {{ form_widget(inscriptionForm.telephone, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+
+                    <div id="indicatifs-liste" style="display: none; position: absolute; z-index: 1000; background-color: white; border: 1px solid #ccc; max-height: 200px; overflow-y: auto; width: auto;">
+                    </div>
+
+                    {{ form_row(inscriptionForm.plainPassword, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Envoyer</button>
+                    </div>
+                {{ form_end(inscriptionForm) }}
+            </div>
+        </div>
     </div>
 {% endblock %}

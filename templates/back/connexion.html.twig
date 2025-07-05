@@ -3,20 +3,38 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <h1>Ravie de vous revoir</h1>
+    <div class="container my-5"> {# Conteneur principal avec marge verticale #}
+        <div class="row justify-content-center"> {# Centrer le contenu horizontalement #}
+            <div class="col-md-6 col-lg-5"> {# Définir la largeur du formulaire sur des écrans moyens et grands #}
 
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+                {# Encadré vert pour le formulaire #}
+                <div class="p-4 border border-success rounded shadow-sm"> {# bordure verte#}
+                    <h1 class="mb-4 text-center text-success">Ravie de vous revoir</h1> {# Titre centré et en vert #}
 
-    {{ form_start(form) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.motDePasse) }}
+                    {% if error %}
+                        <div class="alert alert-danger mb-3" role="alert">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
 
-        {# Garde uniquement ce bouton, avec le style Bootstrap #}
-        {{ form_row(form.submit, {'attr': {'class': 'btn btn-primary'}}) }}
+                    {{ form_start(form) }}
+                        {# Champs email et mot de passe avec styles Bootstrap #}
+                        {{ form_row(form.email, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
+                        {{ form_row(form.motDePasse, {'attr': {'class': 'form-control'}, 'row_attr': {'class': 'mb-3'}}) }}
 
-    {{ form_end(form) }}
+                        {# Bouton de soumission : On utilise form_widget pour styliser le bouton généré par Symfony #}
+                        <div class="d-grid mt-4"> {# Pour que le bouton prenne toute la largeur #}
+                            {{ form_widget(form.submit, {'attr': {'class': ' btn btn-success btn-lg'}}) }}
+                        </div>
+                    {{ form_end(form) }}
+                </div> {# Fin de l'encadré vert #}
 
-    <p><a href="{{ path('inscription') }}">Pas de compte ? Inscrivez-vous</a></p>
+                {# Lien d'inscription sous l'encadré #}
+                <p class="text-center mt-3">
+                    <a href="{{ path('inscription') }}">Pas de compte ? Inscrivez-vous</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

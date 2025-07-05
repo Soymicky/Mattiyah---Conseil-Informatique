@@ -1,11 +1,12 @@
-{# templates/front/accueil.html.twig #}
+{# templates/front/services.html.twig #}
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}Services{% endblock %}
 
 {% block body %}
-    <h1>Services</h1>
+       <h1 class="text-center textvert fw-bold">Nos</h1>
+    <hr class="lignejaucentree mb-5">
     <div class="container py-5">
   {# --- Toggle nav entre Systèmes et Logiciels --- #}
   <h2 class="mb-4 text-center">Catégorie</h2>
@@ -37,14 +38,14 @@
           </ul>
         </div>
         <div class="col-lg-6 text-center order-lg-2">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Audit IT">
+          <img src="{{ asset('img/img_accueil/audit.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Audit IT">
         </div>
       </div>
 
       {# Maintenance et assistance technique #}
       <div class="row align-items-center bg-warning bg-opacity-25 py-5">
         <div class="col-lg-6 text-center mb-3 mb-lg-0">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Maintenance">
+          <img src="{{ asset('img/img_accueil/assistance.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Maintenance">
         </div>
         <div class="col-lg-6">
           <h3>Maintenance et assistance technique</h3>
@@ -67,7 +68,7 @@
           </ul>
         </div>
         <div class="col-lg-6 text-center order-lg-2">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Sécurité">
+          <img src="{{ asset('img/img_accueil/securité.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Sécurité">
         </div>
       </div>
     </div>
@@ -87,14 +88,14 @@
           </ul>
         </div>
         <div class="col-lg-6 text-center">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Licences">
+          <img src="{{ asset('img/img_accueil/gestion-licence.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Licences">
         </div>
       </div>
 
       {# Accompagnement au choix de logiciels #}
       <div class="row align-items-center bg-warning bg-opacity-25 py-5">
         <div class="col-lg-6 text-center mb-3 mb-lg-0">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Choix logiciels">
+          <img src="{{ asset('img/img_accueil/concept-de-controle-qualite-standard-m.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Choix logiciels">
         </div>
         <div class="col-lg-6">
           <h3>Accompagnement au choix de logiciels</h3>
@@ -117,12 +118,11 @@
           </ul>
         </div>
         <div class="col-lg-6 text-center">
-          <img src="https://via.placeholder.com/400x250" class="img-fluid" alt="Support logiciel">
+          <img src="{{ asset('img/img_accueil/gestion-licence.jpg') }}" class="img-fluid d-block mx-auto" style="max-width: 350px;" alt="Support logiciel">
         </div>
       </div>
     </div>
   </div>
 </div>
 
-  
 {% endblock %}

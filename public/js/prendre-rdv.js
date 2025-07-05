@@ -27,10 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dateFormat: "H:i", // Format de l'heure (ex: 14:30)
             time_24hr: true, // Format 24 heures
             minuteIncrement: 10, // Incrément des minutes par 10 (comme dans votre ancien calendrier)
-            minTime: "09:00", // Heure minimale
-            maxTime: "17:30", // Heure maximale (adapté si besoin)
-            // Vous pouvez ajouter des plages horaires spécifiques ou des exceptions ici
-            // Par exemple, pour les heures de votre ancien calendrier :
+            minTime: "09:00", 
+            maxTime: "17:30", 
+            
              enable: [
                { from: "09:00", to: "09:00" }, { from: "10:10", to: "10:10" },
                { from: "11:10", to: "11:10" }, { from: "12:10", to: "12:10" },
@@ -55,8 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         boutonValider.disabled = !(estJourSelectionne && estHeureSelectionnee && estServiceSelectionne && estNiveauServiceSelectionne);
     }
-
-    // 4. Écouteurs d'événements pour la validation
+    
     // Les événements 'change' des inputs de date/heure seront déclenchés par Flatpickr
     inputDate.addEventListener('change', verifierValiditeFormulaire);
     inputHeure.addEventListener('change', verifierValiditeFormulaire);
